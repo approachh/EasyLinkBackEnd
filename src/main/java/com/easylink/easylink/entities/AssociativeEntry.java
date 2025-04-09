@@ -16,10 +16,19 @@ public class AssociativeEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(nullable = false)
-    private String realQuestion;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "real_question")
+    private QuestionTemplate realQuestion;
+
     @Column(nullable = false)
     private String associativeQuestion;
+
     @Column(nullable = false)
     private String answerHash;
+
+    @ManyToOne
+    @JoinColumn(name = "vibe_account")
+    private VibeAccount vibeAccount;
+
 }
