@@ -12,6 +12,6 @@ import java.util.List;
 public class SignUpDTO {
     @NotBlank(message = "Email can't be empty")
     private String email;
-    @NotBlank(message = "All fields mustn't be empty")
+
     private List<AssociativeEntryDTO> entries;
 }

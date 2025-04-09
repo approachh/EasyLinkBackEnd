@@ -22,13 +22,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.modelmapper:modelmapper:3.2.1'
-
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+	implementation 'org.flywaydb:flyway-core:11.6.0'
+	implementation 'org.flywaydb:flyway-database-postgresql:11.6.0'
+
 
 	compileOnly 'org.projectlombok:lombok:1.18.34'
 	annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.postgresql:postgresql:42.7.3'
+	testImplementation 'org.postgresql:postgresql:42.7.3'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'

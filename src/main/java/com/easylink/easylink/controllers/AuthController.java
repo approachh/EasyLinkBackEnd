@@ -1,12 +1,14 @@
 package com.easylink.easylink.controllers; //Updated 27.03
 
+import java.util.List;
 import java.util.Map;
-import com.easylink.easylink.dtos.LoginDTO;
+
+import com.easylink.easylink.dtos.AssociativeLoginRequestDTO;
+import com.easylink.easylink.dtos.AssociativeQuestionDTO;
 import com.easylink.easylink.dtos.SignUpDTO;
 import com.easylink.easylink.services.PersonService;
 import com.easylink.easylink.services.VibeAccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,33 @@ public class AuthController {
 
         boolean created = vibeAccountService.createVibeAccount(signUpDTO);
 
-        return ResponseEntity.ok("wdwq");
+        if (created){
+            return ResponseEntity.ok("The account is created");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The account was not created");
+    }
+
+    @PostMapping("/start")
+    public ResponseEntity<?> startAuth(@RequestBody Map<String,String> payload){
+
+        List<AssociativeQuestionDTO> result  = vibeAccountService.startAuth(payload);
+
+        if(result.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NO questions found");
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/check")
+    public ResponseEntity<?> checkAnswers(@RequestBody @Valid AssociativeLoginRequestDTO associativeLoginRequestDTO){
+
+        boolean success = vibeAccountService.checkAnswers(associativeLoginRequestDTO);
+
+        if (success) {
+            return ResponseEntity.ok("Authentication successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect answer(s)");
+        }
     }
 }

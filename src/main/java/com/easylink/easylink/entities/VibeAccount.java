@@ -24,8 +24,7 @@ public class VibeAccount {
     private UUID id;
 
     private String email;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="vibe_associative_entries",joinColumns = @JoinColumn(name="vibe_account_id"))
+    @OneToMany(mappedBy = "vibeAccount", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<AssociativeEntry> associativeEntries;
 
     private LocalDateTime created;
