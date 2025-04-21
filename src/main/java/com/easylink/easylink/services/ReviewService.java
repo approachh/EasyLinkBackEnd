@@ -15,6 +15,7 @@ public class ReviewService {
 
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
     private ModelMapper modelMapper;
 
     public ReviewDTO addReview(ReviewDTO reviewDTO){
