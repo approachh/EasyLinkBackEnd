@@ -104,7 +104,7 @@ public class VibeAccountService {
         if(associativeAnswerDTOS==null || associativeAnswerDTOS.isEmpty()) return false;
 
         List<UUID> uuidList = associativeAnswerDTOS.stream().map(AssociativeAnswerDTO::getEntryId).toList();
-        List<String> inputAnswers = associativeAnswerDTOS.stream().map(a -> a.getAnswer().trim().toLowerCase()).toList();
+        List<String> inputAnswers = associativeAnswerDTOS.stream().map(a -> a.getAnswer().trim()).toList();
 
         List<AssociativeEntry> associativeEntryList = associativeEntryRepository.findAllById(uuidList);
 
