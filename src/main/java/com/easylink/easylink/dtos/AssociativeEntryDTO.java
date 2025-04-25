@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AssociativeEntryDTO {
-    @NotBlank
-    private String realQuestion;
+
+    private QuestionTemplateDTO realQuestion;
     @NotBlank
     private String associativeQuestion;
     @NotBlank()

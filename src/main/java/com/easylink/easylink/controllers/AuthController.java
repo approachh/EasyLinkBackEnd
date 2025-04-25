@@ -5,8 +5,10 @@ import java.util.Map;
 
 import com.easylink.easylink.dtos.AssociativeLoginRequestDTO;
 import com.easylink.easylink.dtos.AssociativeQuestionDTO;
+import com.easylink.easylink.dtos.QuestionTemplateDTO;
 import com.easylink.easylink.dtos.SignUpDTO;
 import com.easylink.easylink.services.PersonService;
+import com.easylink.easylink.services.QuestionTemplateService;
 import com.easylink.easylink.services.VibeAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import jakarta.validation.Valid;
 public class AuthController {
     private final VibeAccountService vibeAccountService;
     private final PersonService personService;
+    private final QuestionTemplateService questionTemplateService;
 
 //    @Autowired
 //    public AuthController(PersonService personService) {
@@ -75,4 +78,16 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect answer(s)");
         }
     }
+
+    @GetMapping("/question-templates")
+    public ResponseEntity<List<QuestionTemplateDTO>> getAllQuestionTemplates() {
+
+        List<QuestionTemplateDTO> questionTemplateDTOS = questionTemplateService.getAllQuestionTemplates();
+        if (questionTemplateDTOS.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        }
+        return ResponseEntity.ok(questionTemplateDTOS); // 200
+    }
+
+
 }

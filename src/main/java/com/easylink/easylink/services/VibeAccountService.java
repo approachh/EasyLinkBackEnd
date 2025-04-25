@@ -5,9 +5,11 @@ import com.easylink.easylink.entities.AssociativeEntry;
 import com.easylink.easylink.entities.QuestionTemplate;
 import com.easylink.easylink.entities.VibeAccount;
 import com.easylink.easylink.repositories.AssociativeEntryRepository;
+import com.easylink.easylink.repositories.QuestionTemplateRepository;
 import com.easylink.easylink.repositories.VibeAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,27 +25,37 @@ public class VibeAccountService {
     @Autowired
     private final VibeAccountRepository vibeAccountRepository;
     private final AssociativeEntryRepository associativeEntryRepository;
+    private final QuestionTemplateRepository questionTemplateRepository;
+
     @Autowired
     private ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private AssociativeEntry createAssociativeEntry(AssociativeEntryDTO associativeEntryDTO){
+    private AssociativeEntry createAssociativeEntry(AssociativeEntryDTO dto) {
 
-        AssociativeEntry associativeEntry = modelMapper.map(associativeEntryDTO,AssociativeEntry.class);
+        AssociativeEntry associativeEntry = modelMapper.map(dto, AssociativeEntry.class);
 
-        QuestionTemplate questionTemplate = new QuestionTemplate();
-        questionTemplate.setText(associativeEntryDTO.getRealQuestion());
-        questionTemplate.setCreatedAt(LocalDateTime.now());
-        questionTemplate.setPredefined(false);
+        String text = dto.getRealQuestion().getText();
+        boolean isPredefined = dto.getRealQuestion().isPredefined();
 
-        String hashedAnswer = passwordEncoder.encode(associativeEntryDTO.getAnswer());
+
+        QuestionTemplate questionTemplate = questionTemplateRepository.findByText(text)
+                .orElseGet(() -> {
+                    QuestionTemplate qt = new QuestionTemplate();
+                    qt.setText(text);
+                    qt.setPredefined(isPredefined);
+                    qt.setCreatedAt(LocalDateTime.now());
+                    return questionTemplateRepository.save(qt);
+                });
+
+        String hashedAnswer = passwordEncoder.encode(dto.getAnswer());
 
         associativeEntry.setRealQuestion(questionTemplate);
         associativeEntry.setAnswerHash(hashedAnswer);
 
         return associativeEntry;
-
     }
+
 
     public boolean createVibeAccount(SignUpDTO signUpDTO){
 
@@ -114,4 +126,5 @@ public class VibeAccountService {
                 inputAnswers.stream().anyMatch(input -> passwordEncoder.matches(input, entry.getAnswerHash()))
         );
     }
+
 }
