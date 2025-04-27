@@ -4,6 +4,8 @@ import com.easylink.easylink.dtos.*;
 import com.easylink.easylink.entities.AssociativeEntry;
 import com.easylink.easylink.entities.QuestionTemplate;
 import com.easylink.easylink.entities.VibeAccount;
+import com.easylink.easylink.exceptions.IncorrectAnswerException;
+import com.easylink.easylink.exceptions.UserLockedException;
 import com.easylink.easylink.repositories.AssociativeEntryRepository;
 import com.easylink.easylink.repositories.QuestionTemplateRepository;
 import com.easylink.easylink.repositories.VibeAccountRepository;
@@ -109,22 +111,62 @@ public class VibeAccountService {
                 .toList();
     }
 
-    public boolean checkAnswers(AssociativeLoginRequestDTO associativeLoginRequestDTO){
+    private void validateRequest(AssociativeLoginRequestDTO requestDTO){
 
-        List<AssociativeAnswerDTO> associativeAnswerDTOS = associativeLoginRequestDTO.getAnswers();
+        if(requestDTO == null || requestDTO.getAnswers() == null || requestDTO.getAnswers().isEmpty()){
 
-        if(associativeAnswerDTOS==null || associativeAnswerDTOS.isEmpty()) return false;
+            throw new IllegalArgumentException("Answers list must not be empty");
+        }
+    }
 
-        List<UUID> uuidList = associativeAnswerDTOS.stream().map(AssociativeAnswerDTO::getEntryId).toList();
-        List<String> inputAnswers = associativeAnswerDTOS.stream().map(a -> a.getAnswer().trim()).toList();
+    private List<AssociativeEntry> loadEntries(AssociativeLoginRequestDTO requestDTO){
+
+        List<UUID> uuidList = requestDTO.getAnswers().stream().map(AssociativeAnswerDTO::getEntryId).toList();
 
         List<AssociativeEntry> associativeEntryList = associativeEntryRepository.findAllById(uuidList);
 
-        if(associativeEntryList.size()!=associativeAnswerDTOS.size()) return false;
+        return associativeEntryList;
+    }
+
+    private boolean verifyAnswers(List<AssociativeEntry> associativeEntryList, AssociativeLoginRequestDTO requestDTO){
+
+        List<String> inputAnswers = requestDTO.getAnswers().stream().map(a -> a.getAnswer().trim()).toList();
 
         return associativeEntryList.stream().allMatch(entry ->
                 inputAnswers.stream().anyMatch(input -> passwordEncoder.matches(input, entry.getAnswerHash()))
         );
+    }
+
+    private void checkLock(List<AssociativeEntry> associativeEntryList){
+
+        LocalDateTime lockTime = associativeEntryList.getFirst().getVibeAccount().getLockTime();
+
+        if(lockTime != null && lockTime.isAfter(LocalDateTime.now())){
+
+            throw new UserLockedException("Account is locked until "+lockTime);
+
+        }
+    }
+
+    private void checkAnswers(List<AssociativeEntry> associativeEntryList,AssociativeLoginRequestDTO associativeLoginRequestDTO){
+
+        if(!verifyAnswers(associativeEntryList,associativeLoginRequestDTO)){
+
+            throw new IncorrectAnswerException("You answers are incorrect.");
+
+        }
+    }
+
+    public void checkAnswers(AssociativeLoginRequestDTO associativeLoginRequestDTO){
+
+        validateRequest(associativeLoginRequestDTO);
+
+        List<AssociativeEntry> associativeEntryList = loadEntries(associativeLoginRequestDTO);
+
+        checkLock(associativeEntryList);
+
+        checkAnswers(associativeEntryList,associativeLoginRequestDTO);
+
     }
 
 }

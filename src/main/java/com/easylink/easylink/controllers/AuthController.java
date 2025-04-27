@@ -70,13 +70,10 @@ public class AuthController {
     @PostMapping("/check")
     public ResponseEntity<?> checkAnswers(@RequestBody @Valid AssociativeLoginRequestDTO associativeLoginRequestDTO){
 
-        boolean success = vibeAccountService.checkAnswers(associativeLoginRequestDTO);
+       vibeAccountService.checkAnswers(associativeLoginRequestDTO);
 
-        if (success) {
-            return ResponseEntity.ok("Authentication successful");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect answer(s)");
-        }
+       return ResponseEntity.ok("Authentication successful");
+
     }
 
     @GetMapping("/question-templates")
