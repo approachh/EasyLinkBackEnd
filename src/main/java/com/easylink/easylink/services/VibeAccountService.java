@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -143,7 +144,10 @@ public class VibeAccountService {
 
         if(lockTime != null && lockTime.isAfter(LocalDateTime.now())){
 
-            throw new UserLockedException("Account is locked until "+lockTime);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm a");
+            String formattedLockTime = lockTime.format(formatter);
+
+            throw new UserLockedException("Account is locked until "+formattedLockTime);
 
         }
     }
@@ -152,7 +156,7 @@ public class VibeAccountService {
 
         if(!verifyAnswers(associativeEntryList,associativeLoginRequestDTO)){
 
-            throw new IncorrectAnswerException("You answers are incorrect.");
+            throw new IncorrectAnswerException("Your answers are incorrect.");
 
         }
     }

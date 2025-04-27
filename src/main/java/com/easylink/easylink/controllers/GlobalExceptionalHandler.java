@@ -6,11 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionalHandler {
 
     @ExceptionHandler(UserLockedException.class)
@@ -19,8 +20,9 @@ public class GlobalExceptionalHandler {
     }
 
     @ExceptionHandler(IncorrectAnswerException.class)
-    public ResponseEntity<Map<String, Object>> IncorrectAnswerException(UserLockedException ex) {
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Incorrect answers", ex.getMessage());
+    public ResponseEntity<Map<String, Object>> handleIncorrectAnswer(IncorrectAnswerException ex) {
+        System.out.println("IncorrectAnswerException caught by GlobalExceptionHandler!");
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Incorrect answer(s)", ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
