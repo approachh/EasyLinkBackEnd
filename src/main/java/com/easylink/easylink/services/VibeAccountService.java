@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -33,6 +34,9 @@ public class VibeAccountService {
     @Autowired
     private ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+
+    private static final int MAX_FAILED_ATTEMPTS = 5;
+    private static final Duration LOCK_DURATION = Duration.ofMinutes(30);
 
     private AssociativeEntry createAssociativeEntry(AssociativeEntryDTO dto) {
 
@@ -152,9 +156,26 @@ public class VibeAccountService {
         }
     }
 
+
+
+    private void handleFailedLogin(VibeAccount vibeAccount) {
+        vibeAccount.setFailedAttempts(vibeAccount.getFailedAttempts() + 1);
+
+        if (vibeAccount.getFailedAttempts() >= MAX_FAILED_ATTEMPTS) {
+            vibeAccount.setLockTime(LocalDateTime.now().plus(LOCK_DURATION));
+        }
+
+        vibeAccountRepository.save(vibeAccount);
+    }
+
+
     private void checkAnswers(List<AssociativeEntry> associativeEntryList,AssociativeLoginRequestDTO associativeLoginRequestDTO){
 
         if(!verifyAnswers(associativeEntryList,associativeLoginRequestDTO)){
+
+            VibeAccount vibeAccount = associativeEntryList.get(0).getVibeAccount();
+
+            handleFailedLogin(vibeAccount);
 
             throw new IncorrectAnswerException("Your answers are incorrect.");
 
