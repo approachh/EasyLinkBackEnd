@@ -15,8 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -142,17 +141,22 @@ public class VibeAccountService {
         );
     }
 
-    private void checkLock(List<AssociativeEntry> associativeEntryList){
+    private void checkLock(List<AssociativeEntry> associativeEntryList, String timezone) {
+        Instant lockTime = associativeEntryList.getFirst().getVibeAccount().getLockTime();
 
-        LocalDateTime lockTime = associativeEntryList.getFirst().getVibeAccount().getLockTime();
+        if (lockTime != null) {
+            Instant now = Instant.now();
 
-        if(lockTime != null && lockTime.isAfter(LocalDateTime.now())){
+            if (lockTime.isAfter(now)) {
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm a");
-            String formattedLockTime = lockTime.format(formatter);
+                ZoneId userZone = ZoneId.of(timezone);
+                ZonedDateTime userLockTime = lockTime.atZone(userZone);
 
-            throw new UserLockedException("Account is locked until "+formattedLockTime);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm a");
+                String formattedLockTime = userLockTime.format(formatter);
 
+                throw new UserLockedException("Account is locked until " + formattedLockTime + " (" + timezone + ")");
+            }
         }
     }
 
@@ -162,11 +166,12 @@ public class VibeAccountService {
         vibeAccount.setFailedAttempts(vibeAccount.getFailedAttempts() + 1);
 
         if (vibeAccount.getFailedAttempts() >= MAX_FAILED_ATTEMPTS) {
-            vibeAccount.setLockTime(LocalDateTime.now().plus(LOCK_DURATION));
+            vibeAccount.setLockTime(Instant.now().plus(LOCK_DURATION)); // 👈 теперь по UTC
         }
 
         vibeAccountRepository.save(vibeAccount);
     }
+
 
 
     private void checkAnswers(List<AssociativeEntry> associativeEntryList,AssociativeLoginRequestDTO associativeLoginRequestDTO){
@@ -188,7 +193,7 @@ public class VibeAccountService {
 
         List<AssociativeEntry> associativeEntryList = loadEntries(associativeLoginRequestDTO);
 
-        checkLock(associativeEntryList);
+        checkLock(associativeEntryList,associativeLoginRequestDTO.getTimezone());
 
         checkAnswers(associativeEntryList,associativeLoginRequestDTO);
 

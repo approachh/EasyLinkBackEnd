@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +31,6 @@ public class VibeAccount {
     private LocalDateTime created;
     private LocalDateTime lastLogin;
     private int failedAttempts;
-    private LocalDateTime lockTime;
+    private Instant lockTime;
 
 }
