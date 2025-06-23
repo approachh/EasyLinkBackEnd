@@ -187,7 +187,7 @@ public class VibeAccountService {
         }
     }
 
-    public void checkAnswers(AssociativeLoginRequestDTO associativeLoginRequestDTO){
+    public String checkAnswers(AssociativeLoginRequestDTO associativeLoginRequestDTO){
 
         validateRequest(associativeLoginRequestDTO);
 
@@ -196,6 +196,8 @@ public class VibeAccountService {
         checkLock(associativeEntryList,associativeLoginRequestDTO.getTimezone());
 
         checkAnswers(associativeEntryList,associativeLoginRequestDTO);
+
+        return associativeLoginRequestDTO.getEmail();
 
     }
 

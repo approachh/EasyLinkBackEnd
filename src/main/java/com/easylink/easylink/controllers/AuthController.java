@@ -7,6 +7,7 @@ import com.easylink.easylink.dtos.AssociativeLoginRequestDTO;
 import com.easylink.easylink.dtos.AssociativeQuestionDTO;
 import com.easylink.easylink.dtos.QuestionTemplateDTO;
 import com.easylink.easylink.dtos.SignUpDTO;
+import com.easylink.easylink.services.JwtService;
 import com.easylink.easylink.services.PersonService;
 import com.easylink.easylink.services.QuestionTemplateService;
 import com.easylink.easylink.services.VibeAccountService;
@@ -25,6 +26,8 @@ public class AuthController {
     private final VibeAccountService vibeAccountService;
     private final PersonService personService;
     private final QuestionTemplateService questionTemplateService;
+    private final JwtService jwtService;
+
 
 //    @Autowired
 //    public AuthController(PersonService personService) {
@@ -70,10 +73,11 @@ public class AuthController {
     @PostMapping("/check")
     public ResponseEntity<?> checkAnswers(@RequestBody @Valid AssociativeLoginRequestDTO associativeLoginRequestDTO){
 
-       vibeAccountService.checkAnswers(associativeLoginRequestDTO);
+       String username = vibeAccountService.checkAnswers(associativeLoginRequestDTO);
 
-       return ResponseEntity.ok("Authentication successful");
+        String token = jwtService.generateToken(username);
 
+       return ResponseEntity.ok(Map.of("Authentication successful",token));
     }
 
     @GetMapping("/question-templates")
