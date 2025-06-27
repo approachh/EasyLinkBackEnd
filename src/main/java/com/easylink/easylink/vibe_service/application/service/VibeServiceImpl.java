@@ -25,10 +25,10 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
     @Override
     public VibeDto create(CreateVibeCommand command) {
 
-        List<VibeField> vibeFieldList = vibeFieldRepositoryPort.findAllById(command.getFieldIds());
+        List<VibeField> vibeFieldList = vibeFieldRepositoryPort.findAllById(command.getVibeFieldsDTO());
 
         Vibe vibe = new Vibe();
-        vibe.setTitle(command.getTitle());
+   //     vibe.setFields(command.getTitle());
         vibe.setVibeAccountId(command.getAccountId());
         vibe.setFields(vibeFieldList);
 
@@ -49,7 +49,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
         }
 
         List<VibeField> fieldList = vibeFieldRepositoryPort.findAllById(updateVibeCommand.getFieldIds());
-        vibe.setTitle(updateVibeCommand.getTitle());
+        vibe.setDescription(updateVibeCommand.getTitle());
         vibe.setFields(fieldList);
 
         Vibe updated = vibeRepositoryPort.save(vibe);

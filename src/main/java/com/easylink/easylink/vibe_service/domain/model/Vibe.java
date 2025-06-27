@@ -21,7 +21,9 @@ public class Vibe {
     @Column(nullable=false)
     private UUID vibeAccountId;
 
-    private String title;
+    private String description;
+
+    private String name;
 
     @OneToMany(mappedBy = "vibe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<VibeField> fields = new ArrayList<>();
