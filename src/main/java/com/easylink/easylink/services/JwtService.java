@@ -3,6 +3,7 @@ package com.easylink.easylink.services;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.web.server.ServerSecurityMarker;
 import org.springframework.stereotype.Service;
 

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/vibes")
+@RequestMapping("/api/v3/vibes")
 @Tag(name="Vibe API", description = "Manage Vibe profiles")
 @RequiredArgsConstructor
 public class VibeController {

@@ -15,5 +15,5 @@ import java.util.UUID;
 public class CreateVibeCommand {
     private String description;
     private List<VibeFieldDTO> vibeFieldsDTO;
-    private UUID accountId;
+    private UUID id;
 }

@@ -9,11 +9,13 @@ import com.easylink.easylink.vibe_service.application.port.out.VibeFieldReposito
 import com.easylink.easylink.vibe_service.application.port.out.VibeRepositoryPort;
 import com.easylink.easylink.vibe_service.domain.model.Vibe;
 import com.easylink.easylink.vibe_service.domain.model.VibeField;
+import com.easylink.easylink.vibe_service.web.dto.VibeFieldDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +27,13 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
     @Override
     public VibeDto create(CreateVibeCommand command) {
 
-        List<VibeField> vibeFieldList = vibeFieldRepositoryPort.findAllById(command.getVibeFieldsDTO());
+        List<UUID> ids = command.getVibeFieldsDTO().stream().map(VibeFieldDTO::getId).collect(Collectors.toList());
+
+        List<VibeField> vibeFieldList = vibeFieldRepositoryPort.findAllById(ids);
 
         Vibe vibe = new Vibe();
    //     vibe.setFields(command.getTitle());
-        vibe.setVibeAccountId(command.getAccountId());
+
         vibe.setFields(vibeFieldList);
 
         Vibe savedVibe = vibeRepositoryPort.save(vibe);
