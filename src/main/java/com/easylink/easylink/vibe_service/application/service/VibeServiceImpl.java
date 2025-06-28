@@ -7,8 +7,7 @@ import com.easylink.easylink.vibe_service.application.mapper.VibeDtoMapper;
 import com.easylink.easylink.vibe_service.application.port.in.*;
 import com.easylink.easylink.vibe_service.application.port.out.VibeFieldRepositoryPort;
 import com.easylink.easylink.vibe_service.application.port.out.VibeRepositoryPort;
-import com.easylink.easylink.vibe_service.domain.model.Vibe;
-import com.easylink.easylink.vibe_service.domain.model.VibeField;
+import com.easylink.easylink.vibe_service.domain.model.*;
 import com.easylink.easylink.vibe_service.web.dto.VibeFieldDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,16 +28,40 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
         List<UUID> ids = command.getVibeFieldsDTO().stream().map(VibeFieldDTO::getId).collect(Collectors.toList());
 
-        List<VibeField> vibeFieldList = vibeFieldRepositoryPort.findAllById(ids);
+        List<VibeField> vibeFieldList = command.getVibeFieldsDTO().stream()
+                .map(dto -> {
+                    VibeField field;
+                    switch (dto.getType().toLowerCase()) {
+                        case "email":
+                            field = new EmailField();
+
+                            break;
+                        case "phone":
+                            field = new PhoneField();
+                            break;
+                        default:
+                            field = new LinkField();
+                            break;
+                    }
+//                    field.setsetType(dto.getType());
+//                    field.setValue(dto.getValue());
+//                    field.setLabel(dto.getLabel());
+                    return field;
+                })
+                .collect(Collectors.toList());
+
 
         Vibe vibe = new Vibe();
    //     vibe.setFields(command.getTitle());
+        vibe.setDescription(command.getDescription());
+        vibe.setType(command.getType());
+        vibe.setName(command.getName());
 
-        vibe.setFields(vibeFieldList);
+        //vibe.setFields(vibeFieldList);
 
         Vibe savedVibe = vibeRepositoryPort.save(vibe);
 
-        VibeDto vibeDto = VibeDtoMapper.toDto(vibe);
+        VibeDto vibeDto = VibeDtoMapper.toDto(savedVibe);
 
         return vibeDto;
     }
@@ -60,7 +83,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
         VibeDto vibeDto = new VibeDto();
         vibeDto.setId(updated.getId());
-        vibeDto.setTitle(updateVibeCommand.getTitle());
+        vibeDto.setDescription(updateVibeCommand.getTitle());
 
         return vibeDto;
     }

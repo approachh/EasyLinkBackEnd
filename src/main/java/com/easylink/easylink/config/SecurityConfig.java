@@ -11,6 +11,13 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyFactory;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+
 
 @Configuration
 public class SecurityConfig {
@@ -21,10 +28,18 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/.well-known/jwks.json").permitAll()
+                        .requestMatchers("/api/v3/auth/start").permitAll()
+                        .requestMatchers("/api/v3/auth/check").permitAll()
+                        .requestMatchers("/api/v3/reviews/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwkSetUri("http://localhost:8083/.well-known/jwks.json")
+                        )
                 );
+
         return http.build();
     }
 
@@ -60,6 +75,20 @@ public class SecurityConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public RSAPublicKey publicKey() throws Exception {
+        // Например, загрузка из файла public_key.pem
+        String key = Files.readString(Path.of("src/main/resources/keys/public.pem"));
+        key = key.replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
+
+        byte[] decoded = Base64.getDecoder().decode(key);
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        return (RSAPublicKey) kf.generatePublic(spec);
     }
 
 }

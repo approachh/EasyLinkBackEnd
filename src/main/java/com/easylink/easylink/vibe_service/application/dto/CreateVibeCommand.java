@@ -14,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreateVibeCommand {
     private String description;
+    private String type;
+    private String name;
     private List<VibeFieldDTO> vibeFieldsDTO;
-    private UUID id;
 }

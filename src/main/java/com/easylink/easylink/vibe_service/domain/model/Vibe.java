@@ -18,12 +18,13 @@ public class Vibe {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable=false)
     private UUID vibeAccountId;
 
     private String description;
 
     private String name;
+
+    private String type;
 
     @OneToMany(mappedBy = "vibe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<VibeField> fields = new ArrayList<>();

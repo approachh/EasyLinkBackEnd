@@ -35,9 +35,10 @@ public class VibeController {
     @PostMapping
     public ResponseEntity<VibeResponse> create (@RequestBody CreateVibeRequest request, @AuthenticationPrincipal Jwt jwt){
 
-        UUID accountId = UUID.fromString(jwt.getSubject());
+        //    UUID accountId = UUID.fromString(jwt.getSubject());
+        String username = jwt.getSubject();
 
-        VibeDto vibeDto = createVibeUseCase.create(VibeRequestMapper.toCommand(request,accountId));
+        VibeDto vibeDto = createVibeUseCase.create(VibeRequestMapper.toCommand(request,username));
 
         return ResponseEntity.ok(VibeResponseMapper.toResponse(vibeDto));
     }
