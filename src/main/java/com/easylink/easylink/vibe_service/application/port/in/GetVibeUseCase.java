@@ -7,4 +7,7 @@ import java.util.UUID;
 
 public interface GetVibeUseCase {
     List<VibeDto> findAllByVibeAccountId(UUID accountId);
+    List<VibeDto> findAllByUsername(String user);
+    List<VibeDto> findAllById(UUID id);
+    List<VibeDto> findAllByAccountId(UUID id);
 }

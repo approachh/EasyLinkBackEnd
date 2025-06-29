@@ -37,6 +37,8 @@ public class VibeAccountService {
     private static final int MAX_FAILED_ATTEMPTS = 5;
     private static final Duration LOCK_DURATION = Duration.ofMinutes(30);
 
+    private final JwtService jwtService;
+
     private AssociativeEntry createAssociativeEntry(AssociativeEntryDTO dto) {
 
         AssociativeEntry associativeEntry = modelMapper.map(dto, AssociativeEntry.class);
@@ -198,7 +200,14 @@ public class VibeAccountService {
         checkAnswers(associativeEntryList,associativeLoginRequestDTO);
 
         return associativeLoginRequestDTO.getEmail();
-
     }
 
+    public String generateToken(String email){
+        Optional<VibeAccount> vibeAccount = vibeAccountRepository.findByEmail(email);
+        if(vibeAccount.isPresent()){
+            return jwtService.generateToken(String.valueOf(vibeAccount.get().getId()));
+        }else{
+            return null;
+        }
+    }
 }

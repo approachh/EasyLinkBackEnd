@@ -9,5 +9,5 @@ import java.util.UUID;
 @Setter
 public class VibeResponse {
     private UUID id;
-    private String title;
+    private String description;
 }

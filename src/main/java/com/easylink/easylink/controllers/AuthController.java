@@ -2,6 +2,7 @@ package com.easylink.easylink.controllers; //Updated 27.03
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.easylink.easylink.dtos.AssociativeLoginRequestDTO;
 import com.easylink.easylink.dtos.AssociativeQuestionDTO;
@@ -26,7 +27,7 @@ public class AuthController {
     private final VibeAccountService vibeAccountService;
     private final PersonService personService;
     private final QuestionTemplateService questionTemplateService;
-    private final JwtService jwtService;
+
 
 
 //    @Autowired
@@ -73,9 +74,9 @@ public class AuthController {
     @PostMapping("/check")
     public ResponseEntity<?> checkAnswers(@RequestBody @Valid AssociativeLoginRequestDTO associativeLoginRequestDTO){
 
-       String username = vibeAccountService.checkAnswers(associativeLoginRequestDTO);
+        String email = vibeAccountService.checkAnswers(associativeLoginRequestDTO);
 
-        String token = jwtService.generateToken(username);
+        String token = vibeAccountService.generateToken(email);
 
        return ResponseEntity.ok(Map.of("Authentication successful",token));
     }

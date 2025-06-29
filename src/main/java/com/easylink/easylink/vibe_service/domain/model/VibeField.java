@@ -18,6 +18,8 @@ public abstract class VibeField {
     private UUID id;
 
     private String label;
+    private String type;
+    private String value;
 
     @ManyToOne
     @JoinColumn(name = "vibe_id")

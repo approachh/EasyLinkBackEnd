@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
 @Repository
 @RequiredArgsConstructor
 public class JpaVibeRepositoryAdapter  implements VibeRepositoryPort {
@@ -33,5 +34,15 @@ public class JpaVibeRepositoryAdapter  implements VibeRepositoryPort {
     @Override
     public List<Vibe> findAllByAccountId(UUID id) {
         return delegate.findAllByVibeAccountId(id);
+    }
+
+    @Override
+    public List<Vibe> findAllByUsername(String username) {
+        return List.of();
+    }
+
+    @Override
+    public List<Vibe> findAllById(UUID id) {
+        return delegate.findAllById(id);
     }
 }

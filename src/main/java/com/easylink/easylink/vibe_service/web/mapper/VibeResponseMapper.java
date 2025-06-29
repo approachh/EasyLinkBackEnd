@@ -7,7 +7,7 @@ public class VibeResponseMapper {
     public static VibeResponse toResponse(VibeDto vibeDto){
         VibeResponse response = new VibeResponse();
         response.setId(vibeDto.getId());
-        response.setTitle(vibeDto.getDescription());
+        response.setDescription(vibeDto.getDescription());
         return response;
     }
 }

@@ -13,7 +13,6 @@ public class PhoneField extends VibeField{
 
     private String phone;
 
-
     @Override
     public String getType() {
         return "phone";

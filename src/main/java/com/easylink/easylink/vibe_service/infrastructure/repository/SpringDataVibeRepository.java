@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface SpringDataVibeRepository extends JpaRepository<Vibe, UUID> {
     List<Vibe> findAllByVibeAccountId(UUID id);
+    List<Vibe> findAllById(UUID id);
 }

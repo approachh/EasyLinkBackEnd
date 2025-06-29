@@ -15,6 +15,5 @@ import java.util.UUID;
 public class CreateVibeCommand {
     private String description;
     private String type;
-    private String name;
     private List<VibeFieldDTO> vibeFieldsDTO;
 }

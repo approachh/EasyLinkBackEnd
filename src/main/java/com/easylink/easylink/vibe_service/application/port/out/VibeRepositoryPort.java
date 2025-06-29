@@ -11,4 +11,6 @@ public interface VibeRepositoryPort {
     Optional<Vibe> findById(UUID id);
     void delete(Vibe vibe);
     List<Vibe> findAllByAccountId(UUID id);
+    List<Vibe> findAllByUsername(String username);
+    List<Vibe> findAllById(UUID id);
 }

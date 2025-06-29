@@ -18,6 +18,7 @@ public class Vibe {
     @GeneratedValue
     private UUID id;
 
+    @Column(nullable = false)
     private UUID vibeAccountId;
 
     private String description;

@@ -14,6 +14,7 @@ import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class JwtService {
@@ -33,14 +34,13 @@ public class JwtService {
                 .generatePrivate(new PKCS8EncodedKeySpec(decoded));
     }
 
-    public String generateToken(String username){
+    public String generateToken(String id){
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(id)
                 .claim("role","USER")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis()+3600_000))
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
-
     }
 }

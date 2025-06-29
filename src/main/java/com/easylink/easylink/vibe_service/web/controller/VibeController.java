@@ -36,9 +36,9 @@ public class VibeController {
     public ResponseEntity<VibeResponse> create (@RequestBody CreateVibeRequest request, @AuthenticationPrincipal Jwt jwt){
 
         //    UUID accountId = UUID.fromString(jwt.getSubject());
-        String username = jwt.getSubject();
+        String vibAccountId = jwt.getSubject();
 
-        VibeDto vibeDto = createVibeUseCase.create(VibeRequestMapper.toCommand(request,username));
+        VibeDto vibeDto = createVibeUseCase.create(VibeRequestMapper.toCommand(request),vibAccountId);
 
         return ResponseEntity.ok(VibeResponseMapper.toResponse(vibeDto));
     }
@@ -76,9 +76,11 @@ public class VibeController {
     @GetMapping
     public ResponseEntity<List<VibeResponse>> getAll(@AuthenticationPrincipal Jwt jwt){
 
-        UUID accountId = UUID.fromString(jwt.getSubject());
+        // UUID accountId = UUID.fromString(jwt.getSubject());
 
-        List<VibeDto> vibeDtoList = getVibeUseCase.findAllByVibeAccountId(accountId);
+        String id = jwt.getSubject();
+
+        List<VibeDto> vibeDtoList = getVibeUseCase.findAllByAccountId(UUID.fromString(id));
 
         return ResponseEntity.ok((vibeDtoList.stream().map(VibeResponseMapper::toResponse)).toList());
     }

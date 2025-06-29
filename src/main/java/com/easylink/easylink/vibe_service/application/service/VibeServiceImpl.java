@@ -24,7 +24,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
     private final VibeFieldRepositoryPort vibeFieldRepositoryPort;
 
     @Override
-    public VibeDto create(CreateVibeCommand command) {
+    public VibeDto create(CreateVibeCommand command, String vibeAccountId) {
 
         List<UUID> ids = command.getVibeFieldsDTO().stream().map(VibeFieldDTO::getId).collect(Collectors.toList());
 
@@ -33,31 +33,36 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
                     VibeField field;
                     switch (dto.getType().toLowerCase()) {
                         case "email":
-                            field = new EmailField();
-
+                            EmailField emailField = new EmailField();
+                            emailField.setEmail(dto.getValue());
+                            field = emailField;
                             break;
                         case "phone":
-                            field = new PhoneField();
+                            PhoneField phoneField = new PhoneField();
+                            phoneField.setPhone(dto.getValue());
+                            field = phoneField;
                             break;
                         default:
                             field = new LinkField();
                             break;
-                    }
-//                    field.setsetType(dto.getType());
-//                    field.setValue(dto.getValue());
-//                    field.setLabel(dto.getLabel());
+                   }
+                    field.setLabel(dto.getLabel());
+                    field.setType(dto.getType());
+                    field.setValue(dto.getValue());
+                    //return vibeFieldRepositoryPort.save(field);
                     return field;
                 })
                 .collect(Collectors.toList());
 
 
         Vibe vibe = new Vibe();
-   //     vibe.setFields(command.getTitle());
+        vibe.setVibeAccountId(UUID.fromString(vibeAccountId));
         vibe.setDescription(command.getDescription());
         vibe.setType(command.getType());
-        vibe.setName(command.getName());
 
-        //vibe.setFields(vibeFieldList);
+        vibe.setFields(vibeFieldList);
+
+        vibeFieldList.forEach(field->field.setVibe(vibe));
 
         Vibe savedVibe = vibeRepositoryPort.save(vibe);
 
@@ -108,6 +113,33 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
         return dtoList;
     }
+
+    @Override
+    public List<VibeDto> findAllByUsername(String user) {
+        return List.of();
+    }
+
+
+    @Override
+    public List<VibeDto> findAllById(UUID id) {
+
+        List<Vibe> vibeDtoList = vibeRepositoryPort.findAllById(id);
+
+        List<VibeDto> dtoList = vibeDtoList.stream().map(VibeDtoMapper::toDto).toList();
+
+        return dtoList;
+    }
+
+    @Override
+    public List<VibeDto> findAllByAccountId(UUID id) {
+
+        List<Vibe> vibeDtoList = vibeRepositoryPort.findAllByAccountId(id);
+
+        List<VibeDto> dtoList = vibeDtoList.stream().map(VibeDtoMapper::toDto).toList();
+
+        return dtoList;
+    }
+
 
     @Override
     public VibeDto getVibeById(UUID id) {
