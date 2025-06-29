@@ -27,6 +27,6 @@ public class Vibe {
 
     private String type;
 
-    @OneToMany(mappedBy = "vibe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "vibe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<VibeField> fields = new ArrayList<>();
 }

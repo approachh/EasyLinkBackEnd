@@ -1,6 +1,7 @@
 package com.easylink.easylink.vibe_service.application.port.out;
 
 import com.easylink.easylink.vibe_service.domain.model.Vibe;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.util.List;
 import java.util.Optional;

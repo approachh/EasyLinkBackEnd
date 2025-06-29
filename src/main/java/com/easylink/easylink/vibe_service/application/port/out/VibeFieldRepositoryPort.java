@@ -9,5 +9,6 @@ import java.util.UUID;
 public interface VibeFieldRepositoryPort {
     List<VibeField> findAllById(List<UUID> ids);
     VibeField save(VibeField vibeField);
+    List<VibeField> findAllByVibeId(UUID id);
 }
 

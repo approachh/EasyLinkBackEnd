@@ -76,8 +76,6 @@ public class VibeController {
     @GetMapping
     public ResponseEntity<List<VibeResponse>> getAll(@AuthenticationPrincipal Jwt jwt){
 
-        // UUID accountId = UUID.fromString(jwt.getSubject());
-
         String id = jwt.getSubject();
 
         List<VibeDto> vibeDtoList = getVibeUseCase.findAllByAccountId(UUID.fromString(id));

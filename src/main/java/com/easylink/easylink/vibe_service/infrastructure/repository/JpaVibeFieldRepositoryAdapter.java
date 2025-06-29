@@ -29,4 +29,9 @@ public class JpaVibeFieldRepositoryAdapter implements VibeFieldRepositoryPort {
 
         return springDataVibeFieldRepository.save(vibeField);
     }
+
+    @Override
+    public List<VibeField> findAllByVibeId(UUID id) {
+        return springDataVibeFieldRepository.findAllByVibeId(id);
+    }
 }

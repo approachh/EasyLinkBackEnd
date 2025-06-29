@@ -18,6 +18,7 @@ public class VibeDtoMapper {
 
         List<VibeFieldDTO> vibeFieldDTOS = vibe.getFields().stream().map(val->
             new VibeFieldDTO(val.getId(),val.getType(),val.getValue(),val.getLabel())).toList();
+        vibeDto.setFieldsDTO(vibeFieldDTOS);
         return vibeDto;
     }
 }

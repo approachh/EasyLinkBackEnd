@@ -10,6 +10,7 @@ import com.easylink.easylink.vibe_service.application.port.out.VibeRepositoryPor
 import com.easylink.easylink.vibe_service.domain.model.*;
 import com.easylink.easylink.vibe_service.web.dto.VibeFieldDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
