@@ -31,7 +31,10 @@ public class SecurityConfig {
                         .requestMatchers("/.well-known/jwks.json").permitAll()
                         .requestMatchers("/api/v3/auth/start").permitAll()
                         .requestMatchers("/api/v3/auth/check").permitAll()
+                        .requestMatchers("/api/v3/vibes/**").permitAll()
+                        .requestMatchers("/api/v3/auth/signup").permitAll()
                         .requestMatchers("/api/v3/reviews/**").permitAll()
+                        .requestMatchers("/api/v3/auth/question-templates").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

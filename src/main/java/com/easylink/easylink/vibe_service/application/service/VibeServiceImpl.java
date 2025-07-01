@@ -57,6 +57,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
 
         Vibe vibe = new Vibe();
+        vibe.setName(command.getName());
         vibe.setVibeAccountId(UUID.fromString(vibeAccountId));
         vibe.setDescription(command.getDescription());
         vibe.setType(command.getType());

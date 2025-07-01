@@ -13,6 +13,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 public class CreateVibeCommand {
+    private String name;
     private String description;
     private String type;
     private List<VibeFieldDTO> vibeFieldsDTO;
