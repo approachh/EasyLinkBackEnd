@@ -5,10 +5,12 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface SpringDataVibeRepository extends JpaRepository<Vibe, UUID> {
     @EntityGraph(attributePaths = "fields")
     List<Vibe> findAllByVibeAccountId(UUID id);
     List<Vibe> findAllById(UUID id);
+    Optional<Vibe> findById(UUID id);
 }

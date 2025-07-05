@@ -1,4 +1,4 @@
-package com.easylink.easylink.vibe_service.application.port.in;
+package com.easylink.easylink.vibe_service.application.port.in.vibe;
 
 import java.util.UUID;
 

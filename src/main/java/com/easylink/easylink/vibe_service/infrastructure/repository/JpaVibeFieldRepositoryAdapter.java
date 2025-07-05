@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-@RequiredArgsConstructor
 public class JpaVibeFieldRepositoryAdapter implements VibeFieldRepositoryPort {
 
-    @Autowired
     private final SpringDataVibeFieldRepository springDataVibeFieldRepository;
+
+    public JpaVibeFieldRepositoryAdapter(SpringDataVibeFieldRepository springDataVibeFieldRepository){
+        this.springDataVibeFieldRepository = springDataVibeFieldRepository;
+    }
 
     @Override
     public List<VibeField> findAllById(List<UUID> ids) {

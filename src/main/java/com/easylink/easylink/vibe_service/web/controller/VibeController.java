@@ -2,7 +2,7 @@ package com.easylink.easylink.vibe_service.web.controller;
 
 import com.easylink.easylink.vibe_service.application.dto.UpdateVibeCommand;
 import com.easylink.easylink.vibe_service.application.dto.VibeDto;
-import com.easylink.easylink.vibe_service.application.port.in.*;
+import com.easylink.easylink.vibe_service.application.port.in.vibe.*;
 import com.easylink.easylink.vibe_service.web.dto.CreateVibeRequest;
 import com.easylink.easylink.vibe_service.web.dto.UpdateVibeRequest;
 import com.easylink.easylink.vibe_service.web.dto.VibeResponse;
