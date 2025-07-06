@@ -87,7 +87,7 @@ public class VibeController {
     @GetMapping("/{id}")
     public ResponseEntity<VibeResponse> getById(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt){
 
-        UUID accountId = UUID.fromString(jwt.getSubject());
+        //      UUID accountId = UUID.fromString(jwt.getSubject());
 
         VibeDto vibeDto = getVibeByIdUseCase.getVibeById(id);
 
