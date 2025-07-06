@@ -1,5 +1,6 @@
 package com.easylink.easylink.vibe_service.web.dto;
 
+import com.easylink.easylink.vibe_service.domain.model.VibeType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 public class VibeResponse {
     private UUID id;
     private String description;
-    private String type;
+    private VibeType type;
     private String name;
     private List<VibeFieldDTO> fieldsDTO;
 }

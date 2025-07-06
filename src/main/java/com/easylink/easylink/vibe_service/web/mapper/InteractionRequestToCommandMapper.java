@@ -9,6 +9,7 @@ public class InteractionRequestToCommandMapper {
                 createInteractionRequest.getMyVibeId(),
                 createInteractionRequest.getUserEmail(),
                 createInteractionRequest.isAnonymous(),
+                createInteractionRequest.isActive(),
                 createInteractionRequest.getInteractionType());
         return interactionCommand;
     };

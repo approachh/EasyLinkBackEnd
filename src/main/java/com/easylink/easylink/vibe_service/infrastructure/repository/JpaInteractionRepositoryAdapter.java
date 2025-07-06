@@ -15,6 +15,6 @@ public class JpaInteractionRepositoryAdapter implements InteractionRepositoryPor
 
     @Override
     public Interaction save(Interaction interaction) {
-        return null;
+        return delegateRepository.save(interaction);
     }
 }

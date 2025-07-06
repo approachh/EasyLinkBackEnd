@@ -1,5 +1,7 @@
 package com.easylink.easylink.vibe_service.application.service;
 
+import com.easylink.easylink.vibe_service.application.dto.InteractionDto;
+import com.easylink.easylink.vibe_service.application.mapper.InteractionDtoMapper;
 import com.easylink.easylink.vibe_service.application.port.in.interaction.CreateInteractionUseCase;
 import com.easylink.easylink.vibe_service.application.port.in.interaction.DeactivateInteractionUseCase;
 import com.easylink.easylink.vibe_service.application.port.in.interaction.GetInteractionsByVibeUseCase;
@@ -9,6 +11,7 @@ import com.easylink.easylink.vibe_service.infrastructure.repository.JpaInteracti
 import com.easylink.easylink.vibe_service.infrastructure.repository.SpringDataVibeRepository;
 import com.easylink.easylink.vibe_service.web.dto.CreateInteractionRequest;
 import com.easylink.easylink.vibe_service.web.dto.InteractionResponse;
+import com.easylink.easylink.vibe_service.web.mapper.InteractionResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,7 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
         interaction.setActive(createInteractionRequest.isActive());
         interaction.setInteractionType(createInteractionRequest.getInteractionType());
         interactionRepositoryAdapter.save(interaction);
-        return null;
+
+        return InteractionResponseMapper.toInteractionResponse(InteractionDtoMapper.toInteractionDto(interaction));
     }
 }

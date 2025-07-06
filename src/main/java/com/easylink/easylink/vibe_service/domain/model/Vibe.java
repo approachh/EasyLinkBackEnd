@@ -25,7 +25,9 @@ public class Vibe {
 
     private String name;
 
-    private String type;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private VibeType type;
 
     @OneToMany(mappedBy = "vibe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<VibeField> fields = new ArrayList<>();

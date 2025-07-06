@@ -27,8 +27,6 @@ public class InteractionController {
 
         InteractionResponse interactionResponse = createInteractionUseCase.createInteraction(createInteractionRequest);
 
-
-
-        return ;
+        return ResponseEntity.ok(interactionResponse);
     }
 }

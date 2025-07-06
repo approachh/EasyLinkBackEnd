@@ -1,6 +1,7 @@
 package com.easylink.easylink.vibe_service.application.dto;
 
 import com.easylink.easylink.vibe_service.domain.model.VibeField;
+import com.easylink.easylink.vibe_service.domain.model.VibeType;
 import com.easylink.easylink.vibe_service.web.dto.VibeFieldDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,6 @@ import java.util.UUID;
 public class CreateVibeCommand {
     private String name;
     private String description;
-    private String type;
+    private VibeType type;
     private List<VibeFieldDTO> vibeFieldsDTO;
 }
