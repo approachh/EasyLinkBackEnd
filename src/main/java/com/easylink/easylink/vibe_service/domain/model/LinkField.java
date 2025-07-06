@@ -11,8 +11,7 @@ import lombok.Setter;
 @DiscriminatorValue("LINK")
 public class LinkField extends VibeField{
 
-    private String value;
-
+    //private String value;
 
     @Override
     public String getType() {

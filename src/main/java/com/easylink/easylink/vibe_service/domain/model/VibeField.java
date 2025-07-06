@@ -19,7 +19,7 @@ public abstract class VibeField {
 
     private String label;
     private String type;
-    private String value;
+    protected String value;
 
     @ManyToOne
     @JoinColumn(name = "vibe_id")

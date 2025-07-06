@@ -20,6 +20,6 @@ public class PhoneField extends VibeField{
 
     @Override
     public String getValue() {
-        return phone;
+        return this.phone;
     }
 }
