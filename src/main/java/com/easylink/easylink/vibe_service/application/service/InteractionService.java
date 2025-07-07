@@ -1,7 +1,9 @@
 package com.easylink.easylink.vibe_service.application.service;
 
 import com.easylink.easylink.vibe_service.application.dto.InteractionDto;
+import com.easylink.easylink.vibe_service.application.dto.VibeDto;
 import com.easylink.easylink.vibe_service.application.mapper.InteractionDtoMapper;
+import com.easylink.easylink.vibe_service.application.mapper.VibeDtoMapper;
 import com.easylink.easylink.vibe_service.application.port.in.interaction.CreateInteractionUseCase;
 import com.easylink.easylink.vibe_service.application.port.in.interaction.DeactivateInteractionUseCase;
 import com.easylink.easylink.vibe_service.application.port.in.interaction.GetInteractionsByVibeUseCase;
@@ -15,15 +17,21 @@ import com.easylink.easylink.vibe_service.web.mapper.InteractionResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
 public class InteractionService implements CreateInteractionUseCase, DeactivateInteractionUseCase, GetInteractionsByVibeUseCase {
 
-    SpringDataVibeRepository springDataVibeRepository;
-    JpaInteractionRepositoryAdapter interactionRepositoryAdapter;
+    private final SpringDataVibeRepository springDataVibeRepository;
+    private final JpaInteractionRepositoryAdapter interactionRepositoryAdapter;
 
     @Override
     public InteractionResponse createInteraction(CreateInteractionRequest createInteractionRequest) {
@@ -42,5 +50,19 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
         interactionRepositoryAdapter.save(interaction);
 
         return InteractionResponseMapper.toInteractionResponse(InteractionDtoMapper.toInteractionDto(interaction));
+    }
+
+    public List<VibeDto> getFollowing(UUID vibeId){
+
+        //    Vibe vibe = springDataVibeRepository.findById(vibeId).orElseThrow(()->new RuntimeException("Vibe not found"));
+        Optional<Vibe> vibe = springDataVibeRepository.findById(vibeId);
+
+
+        List<Interaction> interactions = interactionRepositoryAdapter.getAllFollowings(vibe.get());
+
+        List<Vibe> vibeList = interactions.stream().map(Interaction::getTargetVibe).collect(Collectors.toList());
+        List<VibeDto> vibeDtoList = vibeList.stream().map(VibeDtoMapper::toDto).toList();
+
+        return vibeDtoList;
     }
 }

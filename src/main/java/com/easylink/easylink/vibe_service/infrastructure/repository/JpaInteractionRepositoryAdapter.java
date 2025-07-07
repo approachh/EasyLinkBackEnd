@@ -2,7 +2,10 @@ package com.easylink.easylink.vibe_service.infrastructure.repository;
 
 import com.easylink.easylink.vibe_service.application.port.out.InteractionRepositoryPort;
 import com.easylink.easylink.vibe_service.domain.interaction.Interaction;
+import com.easylink.easylink.vibe_service.domain.model.Vibe;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class JpaInteractionRepositoryAdapter implements InteractionRepositoryPort {
@@ -16,5 +19,11 @@ public class JpaInteractionRepositoryAdapter implements InteractionRepositoryPor
     @Override
     public Interaction save(Interaction interaction) {
         return delegateRepository.save(interaction);
+    }
+
+    @Override
+    public List<Interaction> getAllFollowings(Vibe subscriberVibe) {
+        List<Interaction> interactionList = delegateRepository.findAllBySubscriberVibe(subscriberVibe);
+        return interactionList;
     }
 }
