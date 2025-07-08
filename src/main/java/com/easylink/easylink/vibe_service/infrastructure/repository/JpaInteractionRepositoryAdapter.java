@@ -6,6 +6,7 @@ import com.easylink.easylink.vibe_service.domain.model.Vibe;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JpaInteractionRepositoryAdapter implements InteractionRepositoryPort {
@@ -25,5 +26,9 @@ public class JpaInteractionRepositoryAdapter implements InteractionRepositoryPor
     public List<Interaction> getAllFollowings(Vibe subscriberVibe) {
         List<Interaction> interactionList = delegateRepository.findAllBySubscriberVibe(subscriberVibe);
         return interactionList;
+    }
+
+    public boolean isSubscribed(Vibe subscriberVibe, Vibe targetVibe){
+        return delegateRepository.findBySubscriberVibeAndTargetVibe(subscriberVibe,targetVibe).isPresent();
     }
 }

@@ -46,8 +46,18 @@ public class InteractionController {
         return ResponseEntity.ok(vibeResponseList);
     }
 
+    @GetMapping("/{subscriberVibeId}/subscribed")
+    public ResponseEntity<Boolean> isSubscribed(@PathVariable UUID subscriberVibeId, @RequestParam UUID targetVibeId, @AuthenticationPrincipal Jwt jwt){
+
+        Boolean isSubscribed = interactionService.isSubscribed(subscriberVibeId,targetVibeId);
+
+        return ResponseEntity.ok(isSubscribed);
+    }
+
     @RequestMapping("/followers")
     public ResponseEntity<VibeResponse> getFollowers(@RequestParam UUID vibeId,@AuthenticationPrincipal Jwt jwt){
+
+
 
         return ResponseEntity.ok(null);
     }

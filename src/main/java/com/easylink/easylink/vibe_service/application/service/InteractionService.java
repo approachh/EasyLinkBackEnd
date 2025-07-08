@@ -62,9 +62,7 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
 
     public List<VibeDto> getFollowing(UUID vibeId){
 
-        //    Vibe vibe = springDataVibeRepository.findById(vibeId).orElseThrow(()->new RuntimeException("Vibe not found"));
         Optional<Vibe> vibe = springDataVibeRepository.findById(vibeId);
-
 
         List<Interaction> interactions = interactionRepositoryAdapter.getAllFollowings(vibe.get());
 
@@ -72,5 +70,15 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
         List<VibeDto> vibeDtoList = vibeList.stream().map(VibeDtoMapper::toDto).toList();
 
         return vibeDtoList;
+    }
+
+    public Boolean isSubscribed(UUID subscriberVibeId,UUID targetVibeId){
+
+        Vibe subscriberVibe = springDataVibeRepository.findById(subscriberVibeId).orElseThrow(()->new RuntimeException("Subscriber Vibe not found"));
+        Vibe targetVibe = springDataVibeRepository.findByTargetVibeId(targetVibeId).orElseThrow(()->new RuntimeException("Target Vibe not found"));
+
+        boolean isSubscribed = interactionRepositoryAdapter.isSubscribed(subscriberVibe,targetVibe);
+
+        return isSubscribed;
     }
 }
