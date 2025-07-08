@@ -44,6 +44,14 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
             throw new RuntimeException("The target Vibe is not found!");
         }
 
+        Optional<Vibe> myVibeOptional = springDataVibeRepository.findById(createInteractionRequest.getMyVibeId());
+
+        if(myVibeOptional.isPresent()){
+            interaction.setSubscriberVibe(myVibeOptional.get());
+        }else{
+            throw new RuntimeException("The subscriber Vibe is not found!");
+        }
+
         interaction.setAnonymous(createInteractionRequest.isAnonymous());
         interaction.setActive(createInteractionRequest.isActive());
         interaction.setInteractionType(createInteractionRequest.getInteractionType());
