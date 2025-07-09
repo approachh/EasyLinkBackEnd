@@ -38,6 +38,7 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
         Interaction interaction = new Interaction();
         Optional<Vibe> vibeOptional = springDataVibeRepository.findById(createInteractionRequest.getTargetVibeId());
 
+
         if(vibeOptional.isPresent()){
             interaction.setTargetVibe(vibeOptional.get());
         }else{
@@ -75,7 +76,7 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
     public Boolean isSubscribed(UUID subscriberVibeId,UUID targetVibeId){
 
         Vibe subscriberVibe = springDataVibeRepository.findById(subscriberVibeId).orElseThrow(()->new RuntimeException("Subscriber Vibe not found"));
-        Vibe targetVibe = springDataVibeRepository.findByTargetVibeId(targetVibeId).orElseThrow(()->new RuntimeException("Target Vibe not found"));
+        Vibe targetVibe = springDataVibeRepository.findById(targetVibeId).orElseThrow(()->new RuntimeException("Target Vibe not found"));
 
         boolean isSubscribed = interactionRepositoryAdapter.isSubscribed(subscriberVibe,targetVibe);
 
