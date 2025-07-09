@@ -7,10 +7,12 @@ import com.easylink.easylink.vibe_service.application.port.out.VibeRepositoryPor
 import com.easylink.easylink.vibe_service.domain.interaction.offer.Offer;
 import com.easylink.easylink.vibe_service.domain.model.Vibe;
 import com.easylink.easylink.vibe_service.domain.model.VibeType;
+import com.easylink.easylink.vibe_service.infrastructure.repository.JpaOfferRepositoryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ public class OfferServiceImpl implements CreateOfferUseCase {
 
     private final ModelMapper modelMapper;
     private final VibeRepositoryPort vibeRepositoryPort;
+    private final JpaOfferRepositoryAdapter jpaOfferRepositoryAdapter;
 
     @Override
     public OfferDto create(CreateOfferCommand createOfferCommand) {
@@ -34,8 +37,20 @@ public class OfferServiceImpl implements CreateOfferUseCase {
         Offer offer = modelMapper.map(createOfferCommand, Offer.class);
         offer.setVibe(vibe);
 
-        OfferDto offerDto = modelMapper.map(offer, OfferDto.class);
+        Offer offerSaved = jpaOfferRepositoryAdapter.save(offer);
+
+        OfferDto offerDto = modelMapper.map(offerSaved, OfferDto.class);
         offerDto.setVibeId(vibe.getId());
         return offerDto;
+    }
+
+    public List<OfferDto> findAllById(UUID id){
+        Vibe vibe = vibeRepositoryPort.findById(id).orElseThrow(()->new IllegalArgumentException("Vibe not found"));
+
+        List<Offer> offerList = jpaOfferRepositoryAdapter.findAllByVibe(vibe);
+
+        List<OfferDto> offerDtoList = offerList.stream().map(offer -> modelMapper.map(offer,OfferDto.class)).toList();
+
+        return offerDtoList;
     }
 }
