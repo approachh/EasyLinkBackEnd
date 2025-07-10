@@ -29,6 +29,8 @@ public class OfferServiceImpl implements CreateOfferUseCase {
 
         UUID vibeId = createOfferCommand.getVibeId();
         Vibe vibe = vibeRepositoryPort.findById(vibeId).orElseThrow(()->new IllegalArgumentException("Vibe not found"));
+//        Optional<Vibe> opvibe = vibeRepositoryPort.findById(vibeId);
+//        Vibe vibe = opvibe.get();
 
         if(!VibeType.BUSINESS.equals(vibe.getType())){
             throw new IllegalArgumentException("Offer creation is allowed only for BUSINESS vibes");

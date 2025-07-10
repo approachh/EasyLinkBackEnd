@@ -24,6 +24,6 @@ public class JpaOfferRepositoryAdapter implements OfferRepositoryPort {
     @Override
     public List<Offer> findAllByVibe(Vibe vibe) {
         List<Offer> offerList = springDataOffer.findAllByVibe(vibe);
-        return List.of();
+        return offerList;
     }
 }
