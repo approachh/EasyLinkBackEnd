@@ -33,5 +33,5 @@ public class Offer {
     private int decreaseIntervalMinutes;
     private boolean active;
     private LocalDateTime startTime;
-
+    private LocalDateTime endTime;
 }

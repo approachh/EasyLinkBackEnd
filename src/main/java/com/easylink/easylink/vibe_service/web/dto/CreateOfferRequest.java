@@ -20,4 +20,5 @@ public class CreateOfferRequest {
     private int decreaseIntervalMinutes;
     private boolean active;
     private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

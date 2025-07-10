@@ -1,6 +1,7 @@
 package com.easylink.easylink.vibe_service.application.service;
 
 import com.easylink.easylink.vibe_service.application.dto.InteractionDto;
+import com.easylink.easylink.vibe_service.application.dto.InteractionWithOffersDTO;
 import com.easylink.easylink.vibe_service.application.dto.VibeDto;
 import com.easylink.easylink.vibe_service.application.mapper.InteractionDtoMapper;
 import com.easylink.easylink.vibe_service.application.mapper.VibeDtoMapper;
@@ -72,6 +73,15 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
 
         return vibeDtoList;
     }
+    public List<InteractionWithOffersDTO> getFollowingWithOffers(UUID vibeId){
+
+        Optional<Vibe> vibe = springDataVibeRepository.findById(vibeId);
+
+        List<InteractionWithOffersDTO>  interactions = interactionRepositoryAdapter.getAllFollowingsWithOffers(vibe.get());
+
+        return interactions;
+    }
+
 
     public Boolean isSubscribed(UUID subscriberVibeId,UUID targetVibeId){
 
