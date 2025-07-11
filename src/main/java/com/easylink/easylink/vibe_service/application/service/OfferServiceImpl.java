@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,6 +39,9 @@ public class OfferServiceImpl implements CreateOfferUseCase {
 
         Offer offer = modelMapper.map(createOfferCommand, Offer.class);
         offer.setVibe(vibe);
+        offer.setActive(true);
+        offer.setStartTime(LocalDateTime.now());
+        offer.setStartTime(createOfferCommand.getEndTime());
 
         Offer offerSaved = jpaOfferRepositoryAdapter.save(offer);
 

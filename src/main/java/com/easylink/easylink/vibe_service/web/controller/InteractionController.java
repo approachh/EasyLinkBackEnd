@@ -59,14 +59,22 @@ public class InteractionController {
         List<InteractionWithOffersDTO> interactionWithOffersDTO = interactionService.getFollowingWithOffers(id);
 
         //   List<InteractionWithOfferResponse> interactionWithOfferResponse = interactionWithOffersDTO.stream().map(dto-> modelMapper.map(dto, InteractionWithOfferResponse.class)).toList();
-        List<InteractionWithOfferResponse> interactionWithOfferResponse = interactionWithOffersDTO.stream().map(dto->new InteractionWithOfferResponse(
-                dto.id(),
-                dto.subscriber_vibe_id(),
-                dto.target_vibe_id(),
-                dto.created_at(),
-                dto.active_offer_count())).toList();
+        List<InteractionWithOfferResponse> responses = interactionWithOffersDTO.stream()
+                .map(dto -> {
+                    Interaction i = dto.interaction();
+                    return new InteractionWithOfferResponse(
+                            i.getId(),
+                            i.getTargetVibe().getId(),
+                            i.getTargetVibe().getName(),
+                            i.getTargetVibe().getType().toString(),
+                            i.getTargetVibe().getDescription(),
+                            dto.count()
+                    );
+                })
+                .toList();
 
-        return ResponseEntity.ok(interactionWithOfferResponse);
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{subscriberVibeId}/subscribed")

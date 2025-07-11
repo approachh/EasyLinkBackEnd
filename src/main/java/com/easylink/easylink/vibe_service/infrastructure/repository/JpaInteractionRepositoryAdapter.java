@@ -36,36 +36,14 @@ public class JpaInteractionRepositoryAdapter implements InteractionRepositoryPor
 
     @Override
     public List<InteractionWithOffersDTO> getAllFollowingsWithOffers(Vibe subscriberVibe) {
+
         List<Object[]> rows = delegateRepository.findAllBySubscriberVibeWithOffers(subscriberVibe);
 
-        return rows.stream()
-                .map(row -> {
-                    // Проверяем, что row[3] не null и корректно приводим к LocalDateTime
-                    LocalDateTime createdAt = null;
-                    if (row[3] != null) {
-                        Object raw = row[3];
-                        if (raw instanceof Timestamp ts) {
-                            createdAt = ts.toLocalDateTime();
-                        } else if (raw instanceof Date date) {
-                            createdAt = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                        } else if (raw instanceof String str) {
-                            createdAt = LocalDateTime.parse(str);
-                        } else {
-                            throw new IllegalArgumentException("Unknown date type: " + raw.getClass());
-                        }
-                    }
-                    // Если row[4] null, считаем количество офферов 0
-                    int offerCount = row[4] == null ? 0 : ((Number) row[4]).intValue();
-
-                    return new InteractionWithOffersDTO(
-                            UUID.fromString(row[0].toString()),
-                            UUID.fromString(row[1].toString()),
-                            UUID.fromString(row[2].toString()),
-                            createdAt,
-                            offerCount
-                    );
-                })
+        List<InteractionWithOffersDTO> result = rows.stream()
+                .map(arr -> new InteractionWithOffersDTO((Interaction) arr[0], ((Long) arr[1]).intValue()))
                 .toList();
+
+        return result;
     }
 
 
