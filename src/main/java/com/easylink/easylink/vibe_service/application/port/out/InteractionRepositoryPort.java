@@ -2,6 +2,7 @@ package com.easylink.easylink.vibe_service.application.port.out;
 
 import com.easylink.easylink.vibe_service.application.dto.InteractionWithOffersDTO;
 import com.easylink.easylink.vibe_service.domain.interaction.Interaction;
+import com.easylink.easylink.vibe_service.domain.model.EarlyAccessRequest;
 import com.easylink.easylink.vibe_service.domain.model.Vibe;
 
 import java.util.List;

@@ -3,6 +3,7 @@ package com.easylink.easylink.vibe_service.infrastructure.repository;
 import com.easylink.easylink.vibe_service.application.dto.InteractionWithOffersDTO;
 import com.easylink.easylink.vibe_service.application.port.out.InteractionRepositoryPort;
 import com.easylink.easylink.vibe_service.domain.interaction.Interaction;
+import com.easylink.easylink.vibe_service.domain.model.EarlyAccessRequest;
 import com.easylink.easylink.vibe_service.domain.model.Vibe;
 import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
@@ -45,7 +46,6 @@ public class JpaInteractionRepositoryAdapter implements InteractionRepositoryPor
 
         return result;
     }
-
 
     public boolean isSubscribed(Vibe subscriberVibe, Vibe targetVibe){
         return delegateRepository.findBySubscriberVibeAndTargetVibe(subscriberVibe,targetVibe).isPresent();

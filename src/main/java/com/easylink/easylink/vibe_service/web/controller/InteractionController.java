@@ -1,25 +1,19 @@
 package com.easylink.easylink.vibe_service.web.controller;
 
-import ch.qos.logback.core.model.processor.ModelFilter;
+import com.easylink.easylink.vibe_service.application.dto.EarlyAccessRequestDTO;
 import com.easylink.easylink.vibe_service.application.dto.InteractionWithOffersDTO;
 import com.easylink.easylink.vibe_service.application.dto.VibeDto;
+import com.easylink.easylink.vibe_service.application.port.in.interaction.CreateEarlyAccessUseCase;
 import com.easylink.easylink.vibe_service.application.port.in.interaction.CreateInteractionUseCase;
 import com.easylink.easylink.vibe_service.application.service.InteractionService;
 import com.easylink.easylink.vibe_service.domain.interaction.Interaction;
-import com.easylink.easylink.vibe_service.infrastructure.repository.SpringDataVibeRepository;
-import com.easylink.easylink.vibe_service.web.dto.CreateInteractionRequest;
-import com.easylink.easylink.vibe_service.web.dto.InteractionResponse;
-import com.easylink.easylink.vibe_service.web.dto.InteractionWithOfferResponse;
-import com.easylink.easylink.vibe_service.web.dto.VibeResponse;
+import com.easylink.easylink.vibe_service.web.dto.*;
 import com.easylink.easylink.vibe_service.web.mapper.VibeResponseMapper;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.asm.IModelFilter;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +26,7 @@ public class InteractionController {
 
     private final CreateInteractionUseCase createInteractionUseCase;
     private final InteractionService interactionService;
+    private final CreateEarlyAccessUseCase createEarlyAccessUseCase;
     private final ModelMapper modelMapper;
 
     @PostMapping
@@ -85,12 +80,19 @@ public class InteractionController {
         return ResponseEntity.ok(isSubscribed);
     }
 
-    @RequestMapping("/followers")
-    public ResponseEntity<VibeResponse> getFollowers(@RequestParam UUID vibeId,@AuthenticationPrincipal Jwt jwt){
-
-
-
-        return ResponseEntity.ok(null);
+    @PostMapping("/early-access")
+    public ResponseEntity<EarlyRequestAccessResponse> requestEarlySubscription(@RequestParam String email, @AuthenticationPrincipal Jwt jwt){
+        EarlyAccessRequestDTO earlyAccessRequestDTO= createEarlyAccessUseCase.create(email);
+        EarlyRequestAccessResponse earlyRequestAccessResponse = modelMapper.map(earlyAccessRequestDTO,EarlyRequestAccessResponse.class);
+        return ResponseEntity.ok(earlyRequestAccessResponse);
     }
+
+//    @RequestMapping("/followers")
+//    public ResponseEntity<VibeResponse> getFollowers(@RequestParam UUID vibeId,@AuthenticationPrincipal Jwt jwt){
+//
+//
+//
+//        return ResponseEntity.ok(null);
+//    }
 
 }
