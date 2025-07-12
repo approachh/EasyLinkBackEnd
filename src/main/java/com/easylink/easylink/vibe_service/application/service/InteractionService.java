@@ -5,10 +5,7 @@ import com.easylink.easylink.vibe_service.application.dto.InteractionWithOffersD
 import com.easylink.easylink.vibe_service.application.dto.VibeDto;
 import com.easylink.easylink.vibe_service.application.mapper.InteractionDtoMapper;
 import com.easylink.easylink.vibe_service.application.mapper.VibeDtoMapper;
-import com.easylink.easylink.vibe_service.application.port.in.interaction.CreateEarlyAccessUseCase;
-import com.easylink.easylink.vibe_service.application.port.in.interaction.CreateInteractionUseCase;
-import com.easylink.easylink.vibe_service.application.port.in.interaction.DeactivateInteractionUseCase;
-import com.easylink.easylink.vibe_service.application.port.in.interaction.GetInteractionsByVibeUseCase;
+import com.easylink.easylink.vibe_service.application.port.in.interaction.*;
 import com.easylink.easylink.vibe_service.domain.interaction.Interaction;
 import com.easylink.easylink.vibe_service.domain.model.EarlyAccessRequest;
 import com.easylink.easylink.vibe_service.domain.model.Vibe;
@@ -30,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class InteractionService implements CreateInteractionUseCase, DeactivateInteractionUseCase, GetInteractionsByVibeUseCase, CreateEarlyAccessUseCase {
+public class InteractionService implements CreateInteractionUseCase, DeactivateInteractionUseCase, GetInteractionsByVibeUseCase, CreateEarlyAccessUseCase, EarlyAccessCheckable {
 
     private final SpringDataVibeRepository springDataVibeRepository;
     private final JpaInteractionRepositoryAdapter interactionRepositoryAdapter;
@@ -109,5 +106,12 @@ public class InteractionService implements CreateInteractionUseCase, DeactivateI
         EarlyAccessRequestDTO earlyAccessRequestDTO = modelMapper.map(earlyAccessRequestSaved,EarlyAccessRequestDTO.class);
 
         return earlyAccessRequestDTO;
+    }
+
+    @Override
+    public boolean isSubscribedEarlyAccess(String email) {
+
+        return jpaEarlyAccessRequestAdapter.isSubscribedEarlyAccess(email);
+
     }
 }

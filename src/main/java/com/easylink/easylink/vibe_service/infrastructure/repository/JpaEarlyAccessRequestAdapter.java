@@ -19,4 +19,11 @@ public class JpaEarlyAccessRequestAdapter implements EarlyAccessRequestPort {
 
         return earlyAccessRequestSaved;
     }
+
+    public boolean isSubscribedEarlyAccess(String email){
+
+        EarlyAccessRequest earlyAccessRequest = springDataEarlyAccessRequestRepository.findByEmail(email);
+
+        return earlyAccessRequest !=null;
+    }
 }

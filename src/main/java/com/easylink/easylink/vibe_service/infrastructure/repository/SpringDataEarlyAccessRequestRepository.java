@@ -8,5 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface SpringDataEarlyAccessRequestRepository extends JpaRepository<EarlyAccessRequest, UUID> {
-
+    EarlyAccessRequest findByEmail(String email);
 }

@@ -87,6 +87,14 @@ public class InteractionController {
         return ResponseEntity.ok(earlyRequestAccessResponse);
     }
 
+    @GetMapping("/early-access/status")
+    public ResponseEntity<Boolean> isSubscribedEarlyAccess(@RequestParam String email, @AuthenticationPrincipal Jwt jwt){
+
+        boolean isSubscribed = interactionService.isSubscribedEarlyAccess(email);
+
+        return ResponseEntity.ok(isSubscribed);
+    }
+
 //    @RequestMapping("/followers")
 //    public ResponseEntity<VibeResponse> getFollowers(@RequestParam UUID vibeId,@AuthenticationPrincipal Jwt jwt){
 //
