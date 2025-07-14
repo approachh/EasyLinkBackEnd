@@ -9,6 +9,7 @@ import com.easylink.easylink.exceptions.UserLockedException;
 import com.easylink.easylink.repositories.AssociativeEntryRepository;
 import com.easylink.easylink.repositories.QuestionTemplateRepository;
 import com.easylink.easylink.repositories.VibeAccountRepository;
+import com.easylink.easylink.vibe_service.application.service.AmplitudeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class VibeAccountService {
     private final VibeAccountRepository vibeAccountRepository;
     private final AssociativeEntryRepository associativeEntryRepository;
     private final QuestionTemplateRepository questionTemplateRepository;
+    private final AmplitudeService amplitudeService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -190,6 +192,11 @@ public class VibeAccountService {
     }
 
     public String checkAnswers(AssociativeLoginRequestDTO associativeLoginRequestDTO){
+
+        amplitudeService.sendEvent(associativeLoginRequestDTO.getEmail(),"User login", Map.of(
+                "source", "backend",
+                "email",associativeLoginRequestDTO.getEmail()
+        ));
 
         validateRequest(associativeLoginRequestDTO);
 
