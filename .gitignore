@@ -37,6 +37,7 @@ out/
 .vscode/
 
 src/main/resources/application.yml
+src/main/resources/application-local.yml
 
 src/main/resources/keys/*
 !src/main/resources/keys/public.pem
