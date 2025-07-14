@@ -26,16 +26,13 @@ import org.modelmapper.ModelMapper;
 @Service
 @RequiredArgsConstructor
 public class VibeAccountService {
-    @Autowired
+
     private final VibeAccountRepository vibeAccountRepository;
     private final AssociativeEntryRepository associativeEntryRepository;
     private final QuestionTemplateRepository questionTemplateRepository;
     private final AmplitudeService amplitudeService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
-
     private static final int MAX_FAILED_ATTEMPTS = 5;
     private static final Duration LOCK_DURATION = Duration.ofMinutes(30);
 
