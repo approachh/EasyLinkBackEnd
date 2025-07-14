@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 @Repository
 public class JpaVibeFieldRepositoryAdapter implements VibeFieldRepositoryPort {
@@ -17,6 +18,10 @@ public class JpaVibeFieldRepositoryAdapter implements VibeFieldRepositoryPort {
 
     public JpaVibeFieldRepositoryAdapter(SpringDataVibeFieldRepository springDataVibeFieldRepository){
         this.springDataVibeFieldRepository = springDataVibeFieldRepository;
+    }
+    @Override
+    public Optional<VibeField> findById(UUID id) {
+        return springDataVibeFieldRepository.findById(id);
     }
 
     @Override

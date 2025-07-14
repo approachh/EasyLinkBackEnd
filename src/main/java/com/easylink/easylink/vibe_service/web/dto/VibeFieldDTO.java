@@ -15,4 +15,5 @@ public class VibeFieldDTO {
     private String type;
     private String value;
     private String label;
+    private UUID vibeId;
 }

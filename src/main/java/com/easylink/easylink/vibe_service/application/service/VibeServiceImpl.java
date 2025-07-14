@@ -74,24 +74,35 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
     @Override
     public VibeDto update(UpdateVibeCommand updateVibeCommand) {
-
-        Vibe vibe = vibeRepositoryPort.findById(updateVibeCommand.getId()).orElseThrow(()->new RuntimeException("Vibe not found"));
+        Vibe vibe = vibeRepositoryPort.findById(updateVibeCommand.getId())
+                .orElseThrow(() -> new RuntimeException("Vibe not found"));
 
         if (!vibe.getVibeAccountId().equals(updateVibeCommand.getAccountId())){
             throw new SecurityException("Access denied!");
         }
 
-        List<VibeField> fieldList = vibeFieldRepositoryPort.findAllById(updateVibeCommand.getFieldIds());
-        vibe.setDescription(updateVibeCommand.getTitle());
-        vibe.setFields(fieldList);
+        // Обновляем описание
+        vibe.setDescription(updateVibeCommand.getDescription());
+
+        // --- Вот тут самая суть ---
+        List<VibeFieldDTO> fields = updateVibeCommand.getFieldsDTO();
+        if (fields == null) fields = List.of();
+        List<VibeField> updatedFields = new java.util.ArrayList<>();
+        for (VibeFieldDTO dto : fields) {
+            VibeField field = vibeFieldRepositoryPort.findById(dto.getId())
+                    .orElseThrow(() -> new RuntimeException("Field not found: " + dto.getId()));
+            field.setLabel(dto.getLabel());
+            field.setValue(dto.getValue());
+            field.setType(dto.getType());
+            field.setVibe(vibe); // на всякий случай
+            updatedFields.add(vibeFieldRepositoryPort.save(field));
+        }
+
+        vibe.getFields().clear();
+        vibe.getFields().addAll(updatedFields);
 
         Vibe updated = vibeRepositoryPort.save(vibe);
-
-        VibeDto vibeDto = new VibeDto();
-        vibeDto.setId(updated.getId());
-        vibeDto.setDescription(updateVibeCommand.getTitle());
-
-        return vibeDto;
+        return VibeDtoMapper.toDto(updated);
     }
 
     @Override

@@ -53,9 +53,9 @@ public class VibeController {
 
         UpdateVibeCommand updateVibeCommand = new UpdateVibeCommand();
         updateVibeCommand.setId(id);
-        updateVibeCommand.setTitle(request.getTitle());
+        updateVibeCommand.setDescription(request.getDescription());
         updateVibeCommand.setAccountId(accountId);
-        updateVibeCommand.setFieldIds(request.getFieldIds());
+        updateVibeCommand.setFieldsDTO(request.getFieldsDTO());
 
         VibeDto vibeDto = updateVibeUseCase.update(updateVibeCommand);
         return ResponseEntity.ok(VibeResponseMapper.toResponse(vibeDto));

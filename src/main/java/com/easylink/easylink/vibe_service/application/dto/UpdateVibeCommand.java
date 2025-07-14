@@ -1,5 +1,6 @@
 package com.easylink.easylink.vibe_service.application.dto;
 
+import com.easylink.easylink.vibe_service.web.dto.VibeFieldDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,6 @@ import java.util.UUID;
 public class UpdateVibeCommand {
     private UUID id;
     private UUID accountId;
-    private String title;
-    private List<UUID> fieldIds;
+    private String description;
+    private List<VibeFieldDTO> fieldsDTO; // тут то же самое, список DTO
 }
