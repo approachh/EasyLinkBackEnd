@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 INSERT INTO question_template (id, text, predefined, created_at) VALUES
   (gen_random_uuid(), 'What is your favorite book?', true, now()),
   (gen_random_uuid(), 'What is your favorite movie?', true, now()),

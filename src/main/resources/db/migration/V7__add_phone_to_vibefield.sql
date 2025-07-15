@@ -1,2 +1,0 @@
-ALTER TABLE vibe_field ADD COLUMN phone VARCHAR(255);
-ALTER TABLE vibe_field ADD COLUMN email VARCHAR(255);
