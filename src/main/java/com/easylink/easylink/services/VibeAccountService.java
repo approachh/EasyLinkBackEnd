@@ -80,6 +80,13 @@ public class VibeAccountService {
 
         vibeAccount.setAssociativeEntries(entries);
 
+        amplitudeService.sendEvent(signUpDTO.getEmail(),"User created", Map.of(
+                "source", "backend",
+                "email",signUpDTO.getEmail()
+        ));
+
+
+
         return vibeAccountRepository.save(vibeAccount) != null;
     }
 

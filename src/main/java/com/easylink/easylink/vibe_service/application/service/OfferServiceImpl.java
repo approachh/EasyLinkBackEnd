@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ public class OfferServiceImpl implements CreateOfferUseCase {
     private final ModelMapper modelMapper;
     private final VibeRepositoryPort vibeRepositoryPort;
     private final JpaOfferRepositoryAdapter jpaOfferRepositoryAdapter;
+    private final AmplitudeService amplitudeService;
 
     @Override
     public OfferDto create(CreateOfferCommand createOfferCommand) {
@@ -44,6 +46,18 @@ public class OfferServiceImpl implements CreateOfferUseCase {
         offer.setStartTime(createOfferCommand.getEndTime());
 
         Offer offerSaved = jpaOfferRepositoryAdapter.save(offer);
+
+        amplitudeService.sendEvent(
+                vibe.getName(),
+                "Created Offer",
+                Map.of(
+                        "offerId", offerSaved.getId(),
+                        "vibeId", vibe.getId(),
+                        "title", offerSaved.getTitle(),
+                        "source", "backend"
+                )
+        );
+
 
         OfferDto offerDto = modelMapper.map(offerSaved, OfferDto.class);
         offerDto.setVibeId(vibe.getId());
