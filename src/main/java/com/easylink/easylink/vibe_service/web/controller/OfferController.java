@@ -2,9 +2,7 @@ package com.easylink.easylink.vibe_service.web.controller;
 
 import com.easylink.easylink.vibe_service.application.dto.CreateOfferCommand;
 import com.easylink.easylink.vibe_service.application.dto.OfferDto;
-import com.easylink.easylink.vibe_service.application.port.in.offer.CreateOfferUseCase;
 import com.easylink.easylink.vibe_service.application.service.OfferServiceImpl;
-import com.easylink.easylink.vibe_service.infrastructure.repository.JpaOfferRepositoryAdapter;
 import com.easylink.easylink.vibe_service.web.dto.CreateOfferRequest;
 import com.easylink.easylink.vibe_service.web.dto.OfferResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +13,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api/v3/offers")
@@ -35,12 +32,31 @@ public class OfferController {
         return ResponseEntity.ok(modelMapper.map(offerDto,OfferResponse.class));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<OfferResponse>> getOfferById(@PathVariable UUID id,@AuthenticationPrincipal Jwt jwt){
-        List<OfferDto> offerDtoList = offerService.findAllById(id);
+    @GetMapping("/vibe/{vibeId}")
+    public ResponseEntity<List<OfferResponse>> getOffersByVibeId(@PathVariable UUID vibeId, @AuthenticationPrincipal Jwt jwt){
+
+        List<OfferDto> offerDtoList = offerService.findAllById(vibeId);
+
         List<OfferResponse> offerResponseList = offerDtoList.stream().map(offerDto -> {return modelMapper.map(offerDto,OfferResponse.class);}).toList();
+
         return ResponseEntity.ok(offerResponseList);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<OfferResponse> getOfferById(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt){
 
+        OfferDto offerDto = offerService.findOfferById(id);
+
+        OfferResponse offerResponse = modelMapper.map(offerDto,OfferResponse.class);
+
+        return ResponseEntity.ok(offerResponse);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateOffer(@PathVariable UUID id, @RequestBody Map<String,Object> updatedFields, @AuthenticationPrincipal Jwt jwt){
+
+        offerService.updateOfferFields(id,updatedFields);
+
+       return ResponseEntity.ok().build();
+    }
 }

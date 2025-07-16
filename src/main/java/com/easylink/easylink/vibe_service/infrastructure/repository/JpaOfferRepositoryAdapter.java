@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,5 +26,10 @@ public class JpaOfferRepositoryAdapter implements OfferRepositoryPort {
     public List<Offer> findAllByVibe(Vibe vibe) {
         List<Offer> offerList = springDataOffer.findAllByVibe(vibe);
         return offerList;
+    }
+
+    @Override
+    public Optional<Offer> findById(UUID id) {
+        return springDataOffer.findById(id);
     }
 }

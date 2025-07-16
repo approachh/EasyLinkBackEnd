@@ -2,6 +2,7 @@ package com.easylink.easylink.controllers;
 
 import com.easylink.easylink.exceptions.IncorrectAnswerException;
 import com.easylink.easylink.exceptions.UserLockedException;
+import com.easylink.easylink.vibe_service.infrastructure.exception.OfferUpdateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,6 +34,11 @@ public class GlobalExceptionalHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllOtherErrors(Exception ex) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error", ex.getMessage());
+    }
+
+    @ExceptionHandler(OfferUpdateException.class)
+    public ResponseEntity<Map<String,Object>>handleOfferException(OfferUpdateException ex){
+        return buildErrorResponse(HttpStatus.BAD_REQUEST,"Offer update error",ex.getMessage());
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String error, String message) {
