@@ -15,3 +15,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

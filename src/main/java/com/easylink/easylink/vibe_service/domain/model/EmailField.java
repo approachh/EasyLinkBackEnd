@@ -11,8 +11,6 @@ import lombok.Setter;
 @DiscriminatorValue("EMAIL")
 public class EmailField extends VibeField{
 
-    private String email;
-
     @Override
     public String getType() {
         return "email";
@@ -20,6 +18,6 @@ public class EmailField extends VibeField{
 
     @Override
     public String getValue() {
-        return email;
+        return this.value;
     }
 }

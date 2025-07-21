@@ -1,4 +1,5 @@
 package com.easylink.easylink.config;
+//import org.flywaydb.core.internal.resource.classpath.ClassPathResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +12,17 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.springframework.core.io.ClassPathResource;
 
 
 @Configuration
@@ -28,6 +34,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        //.requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico", "/view/**").permitAll()
                         .requestMatchers("/.well-known/jwks.json").permitAll()
                         .requestMatchers("/api/v3/auth/start").permitAll()
                         .requestMatchers("/api/v3/auth/check").permitAll()
@@ -35,11 +43,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/v3/auth/signup").permitAll()
                         .requestMatchers("/api/v3/reviews/**").permitAll()
                         .requestMatchers("/api/v3/auth/question-templates").permitAll()
+                        .requestMatchers("/view/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .jwkSetUri("http://localhost:8083/.well-known/jwks.json")
+                                .jwkSetUri("http://localhost:8080/.well-known/jwks.json")
                         )
                 );
 
@@ -82,16 +91,20 @@ public class SecurityConfig {
 
     @Bean
     public RSAPublicKey publicKey() throws Exception {
-        // Например, загрузка из файла public_key.pem
-        String key = Files.readString(Path.of("src/main/resources/keys/public.pem"));
-        key = key.replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
+        var resource = new ClassPathResource("keys/public.pem");
 
-        byte[] decoded = Base64.getDecoder().decode(key);
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        return (RSAPublicKey) kf.generatePublic(spec);
+        try (InputStream is = resource.getInputStream()) {
+            String key = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+
+            key = key.replace("-----BEGIN PUBLIC KEY-----", "")
+                    .replace("-----END PUBLIC KEY-----", "")
+                    .replaceAll("\\s", "");
+
+            byte[] decoded = Base64.getDecoder().decode(key);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+
+            return (RSAPublicKey) kf.generatePublic(spec);
+        }
     }
-
 }

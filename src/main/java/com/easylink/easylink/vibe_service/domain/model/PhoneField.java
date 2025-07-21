@@ -11,8 +11,6 @@ import lombok.Setter;
 @DiscriminatorValue("PHONE")
 public class PhoneField extends VibeField{
 
-    private String phone;
-
     @Override
     public String getType() {
         return "phone";
@@ -20,6 +18,6 @@ public class PhoneField extends VibeField{
 
     @Override
     public String getValue() {
-        return this.phone;
+        return this.value;
     }
 }

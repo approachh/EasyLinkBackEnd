@@ -85,7 +85,8 @@ public class VibeController {
 
     @Operation(summary = "Get profile", description = "Get Vibe profile using ID")
     @GetMapping("/{id}")
-    public ResponseEntity<VibeResponse> getById(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt){
+    //public ResponseEntity<VibeResponse> getById(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt){
+    public ResponseEntity<VibeResponse> getById(@PathVariable UUID id){
 
         //      UUID accountId = UUID.fromString(jwt.getSubject());
 
