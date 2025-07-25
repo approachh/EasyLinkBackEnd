@@ -1,0 +1,32 @@
+package com.easylink.easylink.vibe_service.web.controller;
+
+import com.easylink.easylink.vibe_service.application.port.in.vibe_visibility.SetVisibilityUseCase;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v3/vibes/visibility")
+public class VibeVisibilityController {
+
+    private final SetVisibilityUseCase setVisibilityUse;
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> setVisibilityVibe(@PathVariable UUID id, @RequestParam boolean visible, @AuthenticationPrincipal Jwt jwt){
+
+        if(visible){
+            String code = setVisibilityUse.setVisibility(id);
+            return ResponseEntity.ok(Map.of("code",code));
+        }else{
+            setVisibilityUse.cancelVisibility(id);
+            return ResponseEntity.ok().build();
+        }
+
+    }
+}

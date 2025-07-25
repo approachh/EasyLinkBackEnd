@@ -14,4 +14,5 @@ public interface VibeRepositoryPort {
     List<Vibe> findAllByAccountId(UUID id);
     List<Vibe> findAllByUsername(String username);
     List<Vibe> findAllById(UUID id);
+    boolean existsByPublicCodeAndVisibleTrue(String publicCode);
 }
