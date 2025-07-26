@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 public class UpdateVibeCommand {
     private UUID id;
+    private String name;
     private UUID accountId;
     private String description;
     private List<VibeFieldDTO> fieldsDTO; // тут то же самое, список DTO

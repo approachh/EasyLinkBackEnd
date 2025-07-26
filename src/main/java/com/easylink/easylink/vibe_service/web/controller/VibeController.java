@@ -48,11 +48,12 @@ public class VibeController {
     public ResponseEntity<VibeResponse> update(
             @PathVariable UUID id,
             @RequestBody UpdateVibeRequest request,
-            @AuthenticationPrincipal Jwt jwt){
+            @AuthenticationPrincipal Jwt jwt) {
         UUID accountId = UUID.fromString(jwt.getSubject());
 
         UpdateVibeCommand updateVibeCommand = new UpdateVibeCommand();
         updateVibeCommand.setId(id);
+        updateVibeCommand.setName(request.getName());
         updateVibeCommand.setDescription(request.getDescription());
         updateVibeCommand.setAccountId(accountId);
         updateVibeCommand.setFieldsDTO(request.getFieldsDTO());
