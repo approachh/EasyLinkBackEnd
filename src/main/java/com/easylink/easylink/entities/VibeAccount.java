@@ -32,5 +32,4 @@ public class VibeAccount {
     private LocalDateTime lastLogin;
     private int failedAttempts;
     private Instant lockTime;
-
 }

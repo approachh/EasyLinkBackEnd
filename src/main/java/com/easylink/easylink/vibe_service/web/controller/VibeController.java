@@ -48,28 +48,18 @@ public class VibeController {
     public ResponseEntity<VibeResponse> update(
             @PathVariable UUID id,
             @RequestBody UpdateVibeRequest request,
-            @AuthenticationPrincipal Jwt jwt){
+            @AuthenticationPrincipal Jwt jwt) {
         UUID accountId = UUID.fromString(jwt.getSubject());
 
         UpdateVibeCommand updateVibeCommand = new UpdateVibeCommand();
         updateVibeCommand.setId(id);
+        updateVibeCommand.setName(request.getName());
         updateVibeCommand.setDescription(request.getDescription());
         updateVibeCommand.setAccountId(accountId);
         updateVibeCommand.setFieldsDTO(request.getFieldsDTO());
 
         VibeDto vibeDto = updateVibeUseCase.update(updateVibeCommand);
         return ResponseEntity.ok(VibeResponseMapper.toResponse(vibeDto));
-    }
-    @Operation(summary = "Delete profile", description = "Delete Vibe profile by ID")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
-            @PathVariable UUID id,
-            @AuthenticationPrincipal Jwt jwt){
-        UUID accountId = UUID.fromString(jwt.getSubject());
-
-        deleteVibeUseCase.delete(id,accountId);
-
-        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Get all profile", description = "Get all Vibe profiles for current accountId")

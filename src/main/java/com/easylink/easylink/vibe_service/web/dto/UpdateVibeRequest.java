@@ -9,6 +9,7 @@ import java.util.UUID;
 @Setter
 @Getter
 public class UpdateVibeRequest {
+    private String name;
     private String description;
     private List<UUID> fieldIds;
     private List<VibeFieldDTO> fieldsDTO; // вот тут массив объектов, а не id!
