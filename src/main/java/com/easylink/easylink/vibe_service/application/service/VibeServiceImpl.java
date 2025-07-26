@@ -81,22 +81,46 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
             throw new SecurityException("Access denied!");
         }
 
-        // Обновляем описание
+        vibe.setName(updateVibeCommand.getName());
         vibe.setDescription(updateVibeCommand.getDescription());
 
         // --- Вот тут самая суть ---
         List<VibeFieldDTO> fields = updateVibeCommand.getFieldsDTO();
         if (fields == null) fields = List.of();
         List<VibeField> updatedFields = new java.util.ArrayList<>();
+
         for (VibeFieldDTO dto : fields) {
-            VibeField field = vibeFieldRepositoryPort.findById(dto.getId())
-                    .orElseThrow(() -> new RuntimeException("Field not found: " + dto.getId()));
+            VibeField field;
+
+            if (dto.getId() == null) {
+                // новое поле
+                switch (dto.getType().toLowerCase()) {
+                    case "email" -> {
+                        EmailField emailField = new EmailField();
+                        emailField.setEmail(dto.getValue());
+                        field = emailField;
+                    }
+                    case "phone" -> {
+                        PhoneField phoneField = new PhoneField();
+                        phoneField.setPhone(dto.getValue());
+                        field = phoneField;
+                    }
+                    default -> field = new LinkField();
+                }
+            } else {
+                // обновление существующего
+                field = vibeFieldRepositoryPort.findById(dto.getId())
+                        .orElseThrow(() -> new RuntimeException("Field not found: " + dto.getId()));
+            }
+
             field.setLabel(dto.getLabel());
             field.setValue(dto.getValue());
             field.setType(dto.getType());
-            field.setVibe(vibe); // на всякий случай
+            field.setVibe(vibe);
+
             updatedFields.add(vibeFieldRepositoryPort.save(field));
         }
+
 
         vibe.getFields().clear();
         vibe.getFields().addAll(updatedFields);

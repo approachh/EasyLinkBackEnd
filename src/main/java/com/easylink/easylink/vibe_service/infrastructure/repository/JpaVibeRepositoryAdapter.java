@@ -45,4 +45,9 @@ public class JpaVibeRepositoryAdapter  implements VibeRepositoryPort {
     public List<Vibe> findAllById(UUID id) {
         return delegate.findAllById(id);
     }
+
+    @Override
+    public Optional<Vibe> findByPublicCodeAndVisibleTrue(String publicCode) {
+        return delegate.findByPublicCodeAndVisibleTrue(publicCode);
+    }
 }

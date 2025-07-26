@@ -29,5 +29,5 @@ public abstract class VibeField {
     private String phone;
     private String email;
     public abstract String getType();
-    public abstract String getValue();
+//    public abstract String getValue();
 }
