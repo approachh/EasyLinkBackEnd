@@ -30,6 +30,7 @@ public class Vibe {
     @Enumerated(EnumType.STRING)
     private VibeType type;
 
+    @Column(nullable = true)
     private Boolean visible;
 
     private String publicCode;

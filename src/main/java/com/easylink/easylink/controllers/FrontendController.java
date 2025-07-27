@@ -8,6 +8,7 @@ public class FrontendController {
 
     @RequestMapping(value = {
             "/",
+            "/signup",
             "/view/**",
             "/vibes/**",
             "/profile/**",

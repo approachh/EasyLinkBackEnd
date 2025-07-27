@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface VibeFieldRepository extends JpaRepository<VibeField, UUID> {
-    // Получить все поля для определённого вайба
+
     List<VibeField> findAllByVibe_Id(UUID vibeId);
 }
