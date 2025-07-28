@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         //.requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico", "/view/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico", "/view/**","/clearviewblue.png" ).permitAll()
                         .requestMatchers("/.well-known/jwks.json").permitAll()
                         .requestMatchers("/api/v3/auth/start").permitAll()
                         .requestMatchers("/api/v3/auth/check").permitAll()

@@ -12,6 +12,7 @@ import java.util.UUID;
 @Repository
 public interface VibeAccountRepository extends JpaRepository<VibeAccount,UUID> {
 
-    Optional<VibeAccount> findByEmail(String email);
+    List<VibeAccount> findByEmail(String email);
+    boolean existsByEmail(String email);
 
 }

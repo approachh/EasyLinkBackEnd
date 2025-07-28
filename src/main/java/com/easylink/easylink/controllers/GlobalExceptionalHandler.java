@@ -1,5 +1,6 @@
 package com.easylink.easylink.controllers;
 
+import com.easylink.easylink.exceptions.DuplicateAccountException;
 import com.easylink.easylink.exceptions.IncorrectAnswerException;
 import com.easylink.easylink.exceptions.UserLockedException;
 import com.easylink.easylink.vibe_service.infrastructure.exception.OfferUpdateException;
@@ -48,5 +49,17 @@ public class GlobalExceptionalHandler {
                 "error", error,
                 "message", message
         ));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    private ResponseEntity<String> handleIllegalState(IllegalStateException ex) {
+        HttpStatus status = HttpStatus.CONFLICT; // 409
+
+        return ResponseEntity.status(status).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateAccountException.class)
+    private ResponseEntity<String> handleDuplicateAccount(DuplicateAccountException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }
