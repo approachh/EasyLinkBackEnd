@@ -3,7 +3,8 @@ package com.easylink.easylink.vibe_service.application.port.out;
 import com.easylink.easylink.vibe_service.domain.model.Item;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CatalogRepositoryPort {
-    List<Item> getAllItemsByVibeId(Long vibeId);
+    List<Item> getAllItemsByVibeId(UUID vibeId);
 }
