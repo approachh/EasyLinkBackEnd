@@ -33,7 +33,7 @@ public class OfferController {
     }
 
     @GetMapping("/vibe/{vibeId}")
-    public ResponseEntity<List<OfferResponse>> getOffersByVibeId(@PathVariable UUID vibeId, @AuthenticationPrincipal Jwt jwt){
+    public ResponseEntity<List<OfferResponse>> getOffersByVibeId(@PathVariable UUID vibeId){
 
         List<OfferDto> offerDtoList = offerService.findAllById(vibeId);
 
