@@ -33,6 +33,9 @@ public class Vibe {
     @Column(nullable = true)
     private Boolean visible;
 
+    @OneToMany(mappedBy = "vibe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items = new ArrayList<>();
+
     private String publicCode;
 
     private LocalDateTime codeGeneratedAt;
