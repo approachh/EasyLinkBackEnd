@@ -1,5 +1,6 @@
 package com.easylink.easylink.config;
 //import org.flywaydb.core.internal.resource.classpath.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,9 @@ import org.springframework.core.io.ClassPathResource;
 @Configuration
 public class SecurityConfig {
 
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -51,7 +55,7 @@ public class SecurityConfig {
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .jwkSetUri("http://localhost:8080/.well-known/jwks.json")
+                                .jwkSetUri(jwkSetUri)
                         )
                 );
 
