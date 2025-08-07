@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v3/vibes/**").permitAll()
                         .requestMatchers("/api/v3/auth/signup").permitAll()
                         .requestMatchers("/api/v3/reviews/**").permitAll()
+                        .requestMatchers("/api/v3/upload/**").permitAll()
+                        .requestMatchers("/api/v3/catalog**").permitAll()
                         .requestMatchers("/api/v3/offers/**").permitAll()
                         .requestMatchers("/api/v3/auth/question-templates").permitAll()
                         .requestMatchers("/view/**").permitAll()

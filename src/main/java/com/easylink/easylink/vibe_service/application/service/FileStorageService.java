@@ -2,6 +2,7 @@ package com.easylink.easylink.vibe_service.application.service;
 
 import com.easylink.easylink.vibe_service.application.port.out.FileStoragePort;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -12,8 +13,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
-public class FileStorageService implements FileStoragePort {
 
+@Service
+public class FileStorageService implements FileStoragePort {
 
         @Value("${vibe.upload.dir}")
         private String uploadDir;
@@ -46,7 +48,6 @@ public class FileStorageService implements FileStoragePort {
             Path destination = uploadPath.resolve(filename);
             Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
 
-            // Возвращаем URL для клиента
             return "/uploads/" + filename;
     }
 

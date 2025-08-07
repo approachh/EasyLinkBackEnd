@@ -26,7 +26,8 @@ public class Item {
     @JoinColumn(name="vibe_id", nullable = false)
     private Vibe vibe;
 
-    public Item(String title, String description, String imageUrl, BigDecimal price) {
+    public Item(Vibe vibe, String title, String description, String imageUrl, BigDecimal price) {
+        this.vibe = vibe;
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
