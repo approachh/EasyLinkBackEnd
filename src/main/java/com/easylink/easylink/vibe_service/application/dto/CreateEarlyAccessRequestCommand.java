@@ -17,4 +17,5 @@ public class CreateEarlyAccessRequestCommand {
     private Instant createdAt = Instant.now();
 
     private boolean approved;
+
 }
