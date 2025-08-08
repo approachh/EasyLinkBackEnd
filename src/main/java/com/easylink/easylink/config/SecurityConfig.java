@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v3/auth/signup").permitAll()
                         .requestMatchers("/api/v3/reviews/**").permitAll()
                         .requestMatchers("/api/v3/auth/question-templates").permitAll()
+                        .requestMatchers("/api/v3/auth/verify-email").permitAll()
                         .requestMatchers("/view/**").permitAll()
                         .anyRequest().authenticated()
                 )

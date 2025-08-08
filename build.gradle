@@ -60,6 +60,9 @@ dependencies {
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+	// Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 
