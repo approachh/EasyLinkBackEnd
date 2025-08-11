@@ -49,14 +49,16 @@ public class AuthController {
 //    }
 
     @PostMapping("/signup")
-    public ResponseEntity createVibeAccount(@RequestBody @Valid SignUpDTO signUpDTO){
+    public ResponseEntity<String> createVibeAccount(@RequestBody @Valid SignUpDTO signUpDTO){
 
         boolean created = vibeAccountService.createVibeAccount(signUpDTO);
+
 
         if (created){
             return ResponseEntity.ok("Verification email sent successfully!");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The account was not created");
+
     }
 
     @PostMapping("/start")
@@ -65,7 +67,7 @@ public class AuthController {
         List<AssociativeQuestionDTO> result  = vibeAccountService.startAuth(payload);
 
         if(result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NO questions found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No questions found");
         }
 
         return ResponseEntity.ok(result);

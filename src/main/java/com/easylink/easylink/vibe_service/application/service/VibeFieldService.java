@@ -25,17 +25,17 @@ public class VibeFieldService implements
         GetVibeFieldUseCase {
 
     private final VibeFieldRepository vibeFieldRepository;
-    private final VibeRepositoryPort vibeRepository; // для установки связи с Vibe
+    private final VibeRepositoryPort vibeRepository;
 
     @Override
     public VibeFieldDTO create(VibeFieldDTO request) {
-        // --- создаём конкретного наследника ---
+
         PublicTextVibeField entity = new PublicTextVibeField();
         entity.setLabel(request.getLabel());
         entity.setType(request.getType());
         entity.setValue(request.getValue());
 
-        // Найти Vibe по id и установить связь
+
         if (request.getVibeId() != null) {
             Vibe vibe = vibeRepository.findById(request.getVibeId())
                     .orElseThrow(() -> new RuntimeException("Vibe not found"));
@@ -53,7 +53,7 @@ public class VibeFieldService implements
         field.setType(request.getType());
         field.setLabel(request.getLabel());
         field.setValue(request.getValue());
-        // обновить связь с вайбом, если надо
+
         if (request.getVibeId() != null) {
             Vibe vibe = vibeRepository.findById(request.getVibeId())
                     .orElseThrow(() -> new RuntimeException("Vibe not found"));
@@ -81,7 +81,7 @@ public class VibeFieldService implements
         return fields.stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    // --- Вспомогательный метод для преобразования entity <-> DTO ---
+
     private VibeFieldDTO toDto(VibeField entity) {
         return new VibeFieldDTO(
                 entity.getId(),

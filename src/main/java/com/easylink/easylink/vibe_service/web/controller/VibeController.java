@@ -51,14 +51,8 @@ public class VibeController {
             @AuthenticationPrincipal Jwt jwt) {
         UUID accountId = UUID.fromString(jwt.getSubject());
 
-        UpdateVibeCommand updateVibeCommand = new UpdateVibeCommand();
-        updateVibeCommand.setId(id);
-        updateVibeCommand.setName(request.getName());
-        updateVibeCommand.setDescription(request.getDescription());
-        updateVibeCommand.setAccountId(accountId);
-        updateVibeCommand.setFieldsDTO(request.getFieldsDTO());
+        VibeDto vibeDto = updateVibeUseCase.update(request,id,accountId);
 
-        VibeDto vibeDto = updateVibeUseCase.update(updateVibeCommand);
         return ResponseEntity.ok(VibeResponseMapper.toResponse(vibeDto));
     }
     @Operation(summary = "Delete profile", description = "Delete Vibe profile by ID")
@@ -86,7 +80,6 @@ public class VibeController {
 
     @Operation(summary = "Get profile", description = "Get Vibe profile using ID")
     @GetMapping("/{id}")
-    //public ResponseEntity<VibeResponse> getById(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt){
     public ResponseEntity<VibeResponse> getById(@PathVariable UUID id){
 
         //      UUID accountId = UUID.fromString(jwt.getSubject());

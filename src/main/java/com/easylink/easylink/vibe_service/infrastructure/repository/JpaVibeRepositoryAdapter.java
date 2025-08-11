@@ -47,7 +47,7 @@ public class JpaVibeRepositoryAdapter  implements VibeRepositoryPort {
     }
 
     @Override
-    public boolean existsByPublicCodeAndVisibleTrue(String publicCode) {
-        return delegate.existsByPublicCodeAndVisibleTrue(publicCode);
+    public Optional<Vibe> findByPublicCodeAndVisibleTrue(String publicCode) {
+        return delegate.findByPublicCodeAndVisibleTrue(publicCode);
     }
 }

@@ -9,6 +9,8 @@ public class VibeResponseMapper {
         response.setId(vibeDto.getId());
         response.setDescription(vibeDto.getDescription());
         response.setName(vibeDto.getName());
+        response.setVisible(vibeDto.getVisible());
+        response.setPublicCode(vibeDto.getPublicCode());
         response.setType(vibeDto.getType());
         response.setFieldsDTO(vibeDto.getFieldsDTO());
         return response;
