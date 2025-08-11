@@ -6,6 +6,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface VibeFieldRepository extends JpaRepository<VibeField, UUID> {
-
     List<VibeField> findAllByVibe_Id(UUID vibeId);
 }

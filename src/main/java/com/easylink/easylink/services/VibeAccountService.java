@@ -11,8 +11,10 @@ import com.easylink.easylink.repositories.AssociativeEntryRepository;
 import com.easylink.easylink.repositories.QuestionTemplateRepository;
 import com.easylink.easylink.repositories.VibeAccountRepository;
 import com.easylink.easylink.vibe_service.application.service.AmplitudeService;
+import com.easylink.easylink.services.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,8 @@ public class VibeAccountService {
     private static final Duration LOCK_DURATION = Duration.ofMinutes(30);
 
     private final JwtService jwtService;
+
+    private final EmailVerificationService emailVerificationService;
 
     private AssociativeEntry createAssociativeEntry(AssociativeEntryDTO dto) {
 
@@ -67,6 +72,19 @@ public class VibeAccountService {
 
 
     public boolean createVibeAccount(SignUpDTO signUpDTO){
+        Optional<VibeAccount> existing = vibeAccountRepository.findByEmail(signUpDTO.getEmail());
+
+        if (existing.isPresent()) {
+            VibeAccount account = existing.get();
+            if (Boolean.TRUE.equals(account.getIsEmailVerified())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "signup.account_already_exists");
+            }
+
+            if (account.getTokenExpiry() != null && account.getTokenExpiry().isAfter(LocalDateTime.now())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "signup.verification_already_sent");
+            }
+            vibeAccountRepository.delete(account);
+        }
 
         boolean accountExists = vibeAccountRepository.existsByEmail(signUpDTO.getEmail());
 
@@ -93,9 +111,10 @@ public class VibeAccountService {
                 "email",signUpDTO.getEmail()
         ));
 
+        VibeAccount savedAccount = vibeAccountRepository.save(vibeAccount);
+        emailVerificationService.sendVerificationEmail(savedAccount);
 
-
-        return vibeAccountRepository.save(vibeAccount) != null;
+        return savedAccount != null;
     }
 
 
@@ -146,7 +165,6 @@ public class VibeAccountService {
     }
 
     private List<AssociativeEntry> loadEntries(AssociativeLoginRequestDTO requestDTO){
-
         List<UUID> uuidList = requestDTO.getAnswers().stream().map(AssociativeAnswerDTO::getEntryId).toList();
 
         List<AssociativeEntry> associativeEntryList = associativeEntryRepository.findAllById(uuidList);
@@ -188,7 +206,7 @@ public class VibeAccountService {
         vibeAccount.setFailedAttempts(vibeAccount.getFailedAttempts() + 1);
 
         if (vibeAccount.getFailedAttempts() >= MAX_FAILED_ATTEMPTS) {
-            vibeAccount.setLockTime(Instant.now().plus(LOCK_DURATION)); // 👈 теперь по UTC
+            vibeAccount.setLockTime(Instant.now().plus(LOCK_DURATION));
         }
 
         vibeAccountRepository.save(vibeAccount);
@@ -219,6 +237,10 @@ public class VibeAccountService {
         validateRequest(associativeLoginRequestDTO);
 
         List<AssociativeEntry> associativeEntryList = loadEntries(associativeLoginRequestDTO);
+        VibeAccount vibeAccount = associativeEntryList.get(0).getVibeAccount();
+        if (Boolean.FALSE.equals(vibeAccount.getIsEmailVerified())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please verify your email before logging in.");
+        }
 
         checkLock(associativeEntryList,associativeLoginRequestDTO.getTimezone());
 
@@ -226,6 +248,10 @@ public class VibeAccountService {
 
         return associativeLoginRequestDTO.getEmail();
     }
+    public boolean verifyEmail(String token) {
+        return emailVerificationService.verifyToken(token);
+    }
+
 
     public String generateToken(String email) {
         List<VibeAccount> listAccount = vibeAccountRepository.findByEmail(email);
@@ -241,4 +267,11 @@ public class VibeAccountService {
         return jwtService.generateToken(listAccount.get(0).getId().toString());
     }
 
+
+    public void deleteUnverifiedAccounts() {
+        List<VibeAccount> expiredAccounts = vibeAccountRepository
+                .findByIsEmailVerifiedFalseAndTokenExpiryBefore(LocalDateTime.now());
+
+        vibeAccountRepository.deleteAll(expiredAccounts);
+    }
 }

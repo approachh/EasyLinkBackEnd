@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -16,6 +17,16 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionalHandler {
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatusException(ResponseStatusException ex) {
+        String messageKey = ex.getReason() != null ? ex.getReason() : "unknown_error";
+        return ResponseEntity.status(ex.getStatusCode()).body(Map.of(
+                "message", messageKey,
+                "status", ex.getStatusCode().value(),
+                "timestamp", LocalDateTime.now(),
+                "error", "Request Error"
+        ));
+    }
     @ExceptionHandler(UserLockedException.class)
     public ResponseEntity<Map<String, Object>> handleUserLocked(UserLockedException ex) {
         return buildErrorResponse(HttpStatus.LOCKED, "Account Locked", ex.getMessage());

@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v3/catalog**").permitAll()
                         .requestMatchers("/api/v3/offers/**").permitAll()
                         .requestMatchers("/api/v3/auth/question-templates").permitAll()
+                        .requestMatchers("/api/v3/auth/verify-email").permitAll()
                         .requestMatchers("/view/**").permitAll()
                         .anyRequest().authenticated()
                 )

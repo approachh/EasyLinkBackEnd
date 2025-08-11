@@ -32,4 +32,7 @@ public class VibeAccount {
     private LocalDateTime lastLogin;
     private int failedAttempts;
     private Instant lockTime;
+    private Boolean isEmailVerified = false;
+    private String emailVerificationToken;
+    private LocalDateTime tokenExpiry;
 }
