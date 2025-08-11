@@ -26,7 +26,9 @@ public class VibeVisibilityService implements SetVisibilityUseCase {
 
         Vibe foundVibe = vibeRepositoryPort.findById(vibeId).orElseThrow(()->new RuntimeException("Vibe not found"));
 
-        String code = codeGenerationService.generateUniqueCode(codeCandidate->foundVibe!=null);
+        String code = codeGenerationService.generateUniqueCode(
+                candidate -> vibeRepositoryPort.findByPublicCodeAndVisibleTrue(candidate).isPresent()
+        );
 
         foundVibe.setVisible(true);
 
@@ -60,5 +62,12 @@ public class VibeVisibilityService implements SetVisibilityUseCase {
         VibeResponse vibeResponse = modelMapper.map(optionalVibe, VibeResponse.class);
 
         return vibeResponse;
+    }
+
+    public String findCodeByVibeId(UUID id){
+
+        Vibe foundVibe = vibeRepositoryPort.findById(id).orElseThrow(()->new RuntimeException("Vibe not found"));
+
+        return foundVibe.getPublicCode();
     }
 }

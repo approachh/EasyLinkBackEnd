@@ -8,6 +8,7 @@ import com.easylink.easylink.vibe_service.application.port.in.vibe.*;
 import com.easylink.easylink.vibe_service.application.port.out.VibeFieldRepositoryPort;
 import com.easylink.easylink.vibe_service.application.port.out.VibeRepositoryPort;
 import com.easylink.easylink.vibe_service.domain.model.*;
+import com.easylink.easylink.vibe_service.web.dto.UpdateVibeRequest;
 import com.easylink.easylink.vibe_service.web.dto.VibeFieldDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,7 +74,15 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
     }
 
     @Override
-    public VibeDto update(UpdateVibeCommand updateVibeCommand) {
+    public VibeDto update(UpdateVibeRequest request, UUID vibeId, UUID accountId) {
+
+        UpdateVibeCommand updateVibeCommand = new UpdateVibeCommand();
+        updateVibeCommand.setId(vibeId);
+        updateVibeCommand.setName(request.getName());
+        updateVibeCommand.setDescription(request.getDescription());
+        updateVibeCommand.setAccountId(accountId);
+        updateVibeCommand.setFieldsDTO(request.getFieldsDTO());
+
         Vibe vibe = vibeRepositoryPort.findById(updateVibeCommand.getId())
                 .orElseThrow(() -> new RuntimeException("Vibe not found"));
 
@@ -84,7 +93,6 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
         vibe.setName(updateVibeCommand.getName());
         vibe.setDescription(updateVibeCommand.getDescription());
 
-        // --- Вот тут самая суть ---
         List<VibeFieldDTO> fields = updateVibeCommand.getFieldsDTO();
         if (fields == null) fields = List.of();
         List<VibeField> updatedFields = new java.util.ArrayList<>();
@@ -93,7 +101,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
             VibeField field;
 
             if (dto.getId() == null) {
-                // новое поле
+
                 switch (dto.getType().toLowerCase()) {
                     case "email" -> {
                         EmailField emailField = new EmailField();
@@ -108,7 +116,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
                     default -> field = new LinkField();
                 }
             } else {
-                // обновление существующего
+
                 field = vibeFieldRepositoryPort.findById(dto.getId())
                         .orElseThrow(() -> new RuntimeException("Field not found: " + dto.getId()));
             }

@@ -1,5 +1,6 @@
 package com.easylink.easylink.config;
 //import org.flywaydb.core.internal.resource.classpath.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,9 @@ import org.springframework.core.io.ClassPathResource;
 @Configuration
 public class SecurityConfig {
 
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,20 +39,25 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         //.requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico", "/view/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico", "/view/**","/clearviewblue.png" ).permitAll()
                         .requestMatchers("/.well-known/jwks.json").permitAll()
                         .requestMatchers("/api/v3/auth/start").permitAll()
                         .requestMatchers("/api/v3/auth/check").permitAll()
                         .requestMatchers("/api/v3/vibes/**").permitAll()
                         .requestMatchers("/api/v3/auth/signup").permitAll()
                         .requestMatchers("/api/v3/reviews/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/api/v3/upload/**").permitAll()
+                        .requestMatchers("/api/v3/catalog**").permitAll()
+                        .requestMatchers("/api/v3/offers/**").permitAll()
                         .requestMatchers("/api/v3/auth/question-templates").permitAll()
+                        .requestMatchers("/api/v3/auth/verify-email").permitAll()
                         .requestMatchers("/view/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .jwkSetUri("http://localhost:8080/.well-known/jwks.json")
+                                .jwkSetUri(jwkSetUri)
                         )
                 );
 
@@ -60,16 +69,13 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
 
-        // Разрешаем запросы только с конкретного домена (или используйте "*" для всех)
+
         config.addAllowedOrigin("*");
         // config.addAllowedOrigin("*");
 
-        config.addAllowedMethod("*");    // Разрешены все HTTP методы
-        config.addAllowedHeader("*");    // Разрешены все заголовки
-        // Если требуется отправлять credentials, раскомментируйте:
-        // config.setAllowCredentials(true);
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
 
-        // Регистрируем конфигурацию для всех маршрутов:
         source.registerCorsConfiguration("/**", config);
         return source;
     }

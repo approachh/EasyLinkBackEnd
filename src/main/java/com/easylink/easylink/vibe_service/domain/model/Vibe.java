@@ -30,7 +30,11 @@ public class Vibe {
     @Enumerated(EnumType.STRING)
     private VibeType type;
 
+    @Column(nullable = true)
     private Boolean visible;
+
+    @OneToMany(mappedBy = "vibe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items = new ArrayList<>();
 
     private String publicCode;
 

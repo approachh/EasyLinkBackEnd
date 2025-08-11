@@ -12,9 +12,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ReviewDTO {
-
     private String username;
     private String content;
     private LocalDateTime createdAt;
-
+    private Integer rating;
 }

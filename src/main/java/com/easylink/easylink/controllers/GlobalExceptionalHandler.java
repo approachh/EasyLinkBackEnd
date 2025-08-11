@@ -1,5 +1,6 @@
 package com.easylink.easylink.controllers;
 
+import com.easylink.easylink.exceptions.DuplicateAccountException;
 import com.easylink.easylink.exceptions.IncorrectAnswerException;
 import com.easylink.easylink.exceptions.UserLockedException;
 import com.easylink.easylink.vibe_service.infrastructure.exception.OfferUpdateException;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -15,6 +17,16 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionalHandler {
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatusException(ResponseStatusException ex) {
+        String messageKey = ex.getReason() != null ? ex.getReason() : "unknown_error";
+        return ResponseEntity.status(ex.getStatusCode()).body(Map.of(
+                "message", messageKey,
+                "status", ex.getStatusCode().value(),
+                "timestamp", LocalDateTime.now(),
+                "error", "Request Error"
+        ));
+    }
     @ExceptionHandler(UserLockedException.class)
     public ResponseEntity<Map<String, Object>> handleUserLocked(UserLockedException ex) {
         return buildErrorResponse(HttpStatus.LOCKED, "Account Locked", ex.getMessage());
@@ -48,5 +60,17 @@ public class GlobalExceptionalHandler {
                 "error", error,
                 "message", message
         ));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    private ResponseEntity<String> handleIllegalState(IllegalStateException ex) {
+        HttpStatus status = HttpStatus.CONFLICT; // 409
+
+        return ResponseEntity.status(status).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateAccountException.class)
+    private ResponseEntity<String> handleDuplicateAccount(DuplicateAccountException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

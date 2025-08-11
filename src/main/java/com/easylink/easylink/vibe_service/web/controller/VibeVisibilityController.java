@@ -20,8 +20,6 @@ public class VibeVisibilityController {
     private final SetVisibilityUseCase setVisibilityUse;
     private final VibeVisibilityService vibeVisibilityService;
 
-
-
     @PatchMapping("/{id}")
     public ResponseEntity<?> setVisibilityVibe(@PathVariable UUID id, @RequestParam boolean visible, @AuthenticationPrincipal Jwt jwt){
 
@@ -40,4 +38,11 @@ public class VibeVisibilityController {
         return  ResponseEntity.ok(vibeVisibilityService.findByPublicCodeAndVisibleTrue(code));
 
     }
+
+//    @GetMapping("/id/{vibeId}/code")
+//    public ResponseEntity findCodeByVibeId(@PathVariable UUID vibeId,@AuthenticationPrincipal Jwt jwt){
+//
+//        return  ResponseEntity.ok(vibeVisibilityService.findCodeByVibeId(vibeId));
+//
+//    }
 }

@@ -49,14 +49,16 @@ public class AuthController {
 //    }
 
     @PostMapping("/signup")
-    public ResponseEntity createVibeAccount(@RequestBody @Valid SignUpDTO signUpDTO){
+    public ResponseEntity<String> createVibeAccount(@RequestBody @Valid SignUpDTO signUpDTO){
 
         boolean created = vibeAccountService.createVibeAccount(signUpDTO);
 
+
         if (created){
-            return ResponseEntity.ok("The account is created");
+            return ResponseEntity.ok("Verification email sent successfully!");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The account was not created");
+
     }
 
     @PostMapping("/start")
@@ -65,7 +67,7 @@ public class AuthController {
         List<AssociativeQuestionDTO> result  = vibeAccountService.startAuth(payload);
 
         if(result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NO questions found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No questions found");
         }
 
         return ResponseEntity.ok(result);
@@ -89,6 +91,19 @@ public class AuthController {
             return ResponseEntity.noContent().build(); // 204
         }
         return ResponseEntity.ok(questionTemplateDTOS); // 200
+    }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestParam("token") String token) {
+        boolean success = vibeAccountService.verifyEmail(token);
+
+        if (success) {
+            return ResponseEntity.status(302)
+                    .header("Location", "http://localhost:5173/email-verified")
+                    .build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
+        }
     }
 
 
