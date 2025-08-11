@@ -1,8 +1,11 @@
 package com.easylink.easylink.vibe_service.application.service;
 
+import com.easylink.easylink.exceptions.NotFoundException;
 import com.easylink.easylink.vibe_service.application.dto.ItemDTO;
+import com.easylink.easylink.vibe_service.application.port.out.CatalogUpdateRepositoryPort;
 import com.easylink.easylink.vibe_service.domain.model.Item;
 import com.easylink.easylink.vibe_service.infrastructure.repository.JpaCatalogRepositoryAdapter;
+import com.easylink.easylink.vibe_service.web.dto.UpdateItemRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,7 +17,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class CatalogService implements CatalogRepositoryPort {
+public class CatalogService implements CatalogRepositoryPort, CatalogUpdateRepositoryPort {
 
     private final JpaCatalogRepositoryAdapter jpaCatalogRepositoryAdapter;
     private final ModelMapper modelMapper;
@@ -38,4 +41,27 @@ public class CatalogService implements CatalogRepositoryPort {
         return itemDTO;
     }
 
+
+    @Override
+    public ItemDTO updateItem(UUID id, UpdateItemRequest updateItemRequest) {
+
+        Item item = jpaCatalogRepositoryAdapter.findById(id)
+                .orElseThrow(() -> new NotFoundException("Item not found"));
+
+        if (updateItemRequest.getTitle() != null) {
+            item.setTitle(updateItemRequest.getTitle());
+        }
+        if (updateItemRequest.getDescription() != null) {
+            item.setDescription(updateItemRequest.getDescription());
+        }
+        if (updateItemRequest.getPrice() != null) {
+            item.setPrice(updateItemRequest.getPrice());
+        }
+        if (updateItemRequest.getImageUrl() != null) {
+            item.setImageUrl(updateItemRequest.getImageUrl());
+        }
+
+        return modelMapper.map(jpaCatalogRepositoryAdapter.save(item), ItemDTO.class);
+
+    }
 }

@@ -1,6 +1,7 @@
 package com.easylink.easylink.vibe_service.application.service;
 
 import com.easylink.easylink.vibe_service.application.port.out.FileStoragePort;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,7 +52,18 @@ public class FileStorageService implements FileStoragePort {
             return "/uploads/" + filename;
     }
 
-        private String getExtension(String filename) {
+  //  @Override
+//    public Resource getFile(String imageUrl) {
+//            Path uploadDir = Paths.get();
+//            Path filePath = uploadDir.resolve(imageUrl).normalize();
+//
+//
+//
+//
+//        return true;
+//    }
+
+    private String getExtension(String filename) {
             int dotIndex = filename.lastIndexOf('.');
             return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
         }

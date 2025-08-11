@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v3/vibes/**").permitAll()
                         .requestMatchers("/api/v3/auth/signup").permitAll()
                         .requestMatchers("/api/v3/reviews/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/v3/upload/**").permitAll()
                         .requestMatchers("/api/v3/catalog**").permitAll()
                         .requestMatchers("/api/v3/offers/**").permitAll()
@@ -67,16 +68,13 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
 
-        // Разрешаем запросы только с конкретного домена (или используйте "*" для всех)
+
         config.addAllowedOrigin("*");
         // config.addAllowedOrigin("*");
 
-        config.addAllowedMethod("*");    // Разрешены все HTTP методы
-        config.addAllowedHeader("*");    // Разрешены все заголовки
-        // Если требуется отправлять credentials, раскомментируйте:
-        // config.setAllowCredentials(true);
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
 
-        // Регистрируем конфигурацию для всех маршрутов:
         source.registerCorsConfiguration("/**", config);
         return source;
     }

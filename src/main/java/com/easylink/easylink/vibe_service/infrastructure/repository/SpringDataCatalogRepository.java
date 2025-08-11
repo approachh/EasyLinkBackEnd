@@ -12,4 +12,5 @@ import java.util.UUID;
 
 public interface SpringDataCatalogRepository extends JpaRepository<Item, UUID> {
     List<Item> findByVibeId(UUID vibeId);
+    Optional<Item> findById(UUID vibeId);
 }

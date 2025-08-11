@@ -29,6 +29,10 @@ public class JpaCatalogRepositoryAdapter implements CatalogSaveItemRepositoryPor
 
         return itemList;
     }
+    
+    public Optional<Item> findById(UUID id){
+        return springDataCatalogRepository.findById(id);
+    }
 
     public Optional<Item> getById(UUID id){
         return springDataCatalogRepository.findById(id);

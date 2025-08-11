@@ -8,6 +8,7 @@ import com.easylink.easylink.vibe_service.application.port.out.CatalogRepository
 import com.easylink.easylink.vibe_service.application.service.CatalogService;
 import com.easylink.easylink.vibe_service.web.dto.CreateItemRequest;
 import com.easylink.easylink.vibe_service.web.dto.ItemResponse;
+import com.easylink.easylink.vibe_service.web.dto.UpdateItemRequest;
 import io.jsonwebtoken.Jwt;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,9 +57,19 @@ public class CatalogController {
 
         ItemDTO itemDTO = catalogService.getById(id);
 
-        ItemResponse itemResponseList = modelMapper.map(itemDTO,ItemResponse.class);
+        ItemResponse itemResponse = modelMapper.map(itemDTO,ItemResponse.class);
 
-        return ResponseEntity.ok(itemResponseList);
+        return ResponseEntity.ok(itemResponse);
+    }
 
+    @Operation(summary="Update item", description = "Partially update an item")
+    @PatchMapping("/{id}")
+    public ResponseEntity<ItemResponse> updateItem(@PathVariable UUID id, @RequestBody UpdateItemRequest updateItemRequest){
+
+        ItemDTO updatedItem = catalogService.updateItem(id, updateItemRequest);
+
+        ItemResponse itemResponse = modelMapper.map(updatedItem,ItemResponse.class);
+
+        return ResponseEntity.ok(itemResponse);
     }
 }
