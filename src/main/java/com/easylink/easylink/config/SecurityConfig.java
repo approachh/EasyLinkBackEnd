@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -38,29 +39,24 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        //.requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico", "/view/**","/clearviewblue.png" ).permitAll()
-                        .requestMatchers("/.well-known/jwks.json").permitAll()
-                        .requestMatchers("/api/v3/auth/start").permitAll()
-                        .requestMatchers("/api/v3/auth/check").permitAll()
-                        .requestMatchers("/api/v3/vibes/**").permitAll()
-                        .requestMatchers("/api/v3/auth/signup").permitAll()
-                        .requestMatchers("/api/v3/reviews/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/api/v3/upload/**").permitAll()
-                        .requestMatchers("/api/v3/catalog**").permitAll()
-                        .requestMatchers("/api/v3/offers/**").permitAll()
-                        .requestMatchers("/api/v3/auth/question-templates").permitAll()
-                        .requestMatchers("/api/v3/auth/verify-email").permitAll()
-                        .requestMatchers("/view/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v3/catalog", "/api/v3/catalog/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico",
+                                "/view/**", "/clearviewblue.png").permitAll()
+                        .requestMatchers("/.well-known/jwks.json",
+                                "/api/v3/auth/start",
+                                "/api/v3/auth/check",
+                                "/api/v3/auth/signup",
+                                "/api/v3/auth/question-templates",
+                                "/api/v3/auth/verify-email").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v3/catalog", "/api/v3/catalog/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v3/vibes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v3/offers/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .jwkSetUri(jwkSetUri)
-                        )
-                );
-
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)));
         return http.build();
     }
 
