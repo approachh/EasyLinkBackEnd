@@ -72,10 +72,14 @@ public class VibeAccountService {
 
 
     public boolean createVibeAccount(SignUpDTO signUpDTO){
-        Optional<VibeAccount> existing = vibeAccountRepository.findByEmail(signUpDTO.getEmail());
+        List<VibeAccount> existing = vibeAccountRepository.findByEmail(signUpDTO.getEmail());
 
-        if (existing.isPresent()) {
-            VibeAccount account = existing.get();
+        if(existing.stream().count()>1){
+            throw new DuplicateAccountException("More than one account with this email!");
+        }
+
+          if (!existing.isEmpty()) {
+            VibeAccount account = existing.get(0);
             if (Boolean.TRUE.equals(account.getIsEmailVerified())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "signup.account_already_exists");
             }

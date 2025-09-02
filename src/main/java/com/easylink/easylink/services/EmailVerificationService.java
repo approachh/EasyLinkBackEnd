@@ -4,6 +4,7 @@ import com.easylink.easylink.entities.VibeAccount;
 import com.easylink.easylink.repositories.VibeAccountRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class EmailVerificationService {
 
@@ -22,11 +24,11 @@ public class EmailVerificationService {
     @Value("${app.verification.base-url}")
     private String baseUrl;
 
-    public EmailVerificationService(VibeAccountRepository vibeAccountRepository,
-                                    JavaMailSender mailSender) {
-        this.vibeAccountRepository = vibeAccountRepository;
-        this.mailSender = mailSender;
-    }
+//    public EmailVerificationService(VibeAccountRepository vibeAccountRepository,
+//                                    JavaMailSender mailSender) {
+//        this.vibeAccountRepository = vibeAccountRepository;
+//        this.mailSender = mailSender;
+//    }
 
     public boolean verifyToken(String token) {
         Optional<VibeAccount> optionalAccount = vibeAccountRepository.findByEmailVerificationToken(token);
