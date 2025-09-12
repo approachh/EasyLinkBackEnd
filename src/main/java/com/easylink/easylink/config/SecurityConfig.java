@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v3/catalog", "/api/v3/catalog/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v3/reviews/**").permitAll()
                         .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico",
                                 "/view/**", "/clearviewblue.png").permitAll()
                         .requestMatchers("/.well-known/jwks.json",
