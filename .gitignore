@@ -1,24 +1,23 @@
-HELP.md
-.gradle
+# gradle / build
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
-.apt_generated
+# IDE
+.apt_generated/
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
-.sts4-cache
+.sts4-cache/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -26,22 +25,28 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+.nb-gradle/
+nbbuild/
+dist/
+nbdist/
+nbproject/private/
 
-### VS Code ###
 .vscode/
 
-src/main/resources/application.yml
+# ==== Spring configs ====
+#   src/main/resources/application.yml
+#   src/main/resources/application-dev.yml
+#   src/test/resources/application.yml
+# личные локальные — игнорим:
 src/main/resources/application-local.yml
-src/test/resources/application.yml
 
-
+# ==== Secrets / env ====
+.env
+*.pem
 src/main/resources/keys/*
-!src/main/resources/keys/public.pem
+!src/main/resources/keys/public.pem   
 
-
+# runtime data
+data/
+uploads/
+logs/
