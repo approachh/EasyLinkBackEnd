@@ -57,6 +57,8 @@ logging:
     org.springframework.web.servlet.resource: ${LOGGING_LEVEL_RESOURCE:INFO}
 
 app:
+  frontend:
+    base-url: ${FRONTEND_BASE_URL:https://youmeknow.com}
   verification:
     base-url: ${APP_VERIFICATION_BASE_URL:http://localhost:8080}
 jwt:
