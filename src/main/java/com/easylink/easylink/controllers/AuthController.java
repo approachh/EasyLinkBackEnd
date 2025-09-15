@@ -1,80 +1,110 @@
-package com.easylink.easylink.controllers;
+package com.easylink.easylink.controllers; 
 
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
+import java.util.UUID;
 
 import com.easylink.easylink.dtos.AssociativeLoginRequestDTO;
 import com.easylink.easylink.dtos.AssociativeQuestionDTO;
 import com.easylink.easylink.dtos.QuestionTemplateDTO;
 import com.easylink.easylink.dtos.SignUpDTO;
+import com.easylink.easylink.services.JwtService;
 import com.easylink.easylink.services.PersonService;
 import com.easylink.easylink.services.QuestionTemplateService;
 import com.easylink.easylink.services.VibeAccountService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v3/auth")
 public class AuthController {
-
     private final VibeAccountService vibeAccountService;
     private final PersonService personService;
     private final QuestionTemplateService questionTemplateService;
 
-    @Value("${app.frontend.base-url:http://localhost:5173}")
-    private String frontendBaseUrl;
+
+
+//    @Autowired
+//    public AuthController(PersonService personService) {
+//        this.personService = personService;
+//    }
+//
+//    @PostMapping("/login") //Updated 30.03.25
+//    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+//        LoginDTO result = personService.login(loginDTO);
+//
+//        if (result != null) {
+//            return ResponseEntity.ok(result); // 👈 JSON с firstName + email
+//        } else {
+//            return ResponseEntity
+//                    .status(HttpStatus.UNAUTHORIZED)
+//                    .body(Map.of("message", "Invalid email or password"));
+//        }
+//    }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> createVibeAccount(@RequestBody @Valid SignUpDTO signUpDTO) {
+    public ResponseEntity<String> createVibeAccount(@RequestBody @Valid SignUpDTO signUpDTO){
+
         boolean created = vibeAccountService.createVibeAccount(signUpDTO);
-        if (created) {
-            return ResponseEntity.ok(Map.of("message", "Verification email sent successfully!"));
+
+
+        if (created){
+            return ResponseEntity.ok("Verification email sent successfully!");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("message", "The account was not created"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The account was not created");
+
     }
 
     @PostMapping("/start")
-    public ResponseEntity<?> startAuth(@RequestBody Map<String, String> payload) {
-        List<AssociativeQuestionDTO> result = vibeAccountService.startAuth(payload);
+    public ResponseEntity<?> startAuth(@RequestBody Map<String,String> payload){
+
+        List<AssociativeQuestionDTO> result  = vibeAccountService.startAuth(payload);
+
+        if(result.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No questions found");
+        }
+
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/check")
-    public ResponseEntity<?> checkAnswers(@RequestBody @Valid AssociativeLoginRequestDTO associativeLoginRequestDTO) {
+    public ResponseEntity<?> checkAnswers(@RequestBody @Valid AssociativeLoginRequestDTO associativeLoginRequestDTO){
+
         String email = vibeAccountService.checkAnswers(associativeLoginRequestDTO);
+
         String token = vibeAccountService.generateToken(email);
 
-        return ResponseEntity.ok(Map.of(
-                "Authentication successful", token,   
-                "message", "Authentication successful",
-                "token", token   
-        ));
+       return ResponseEntity.ok(Map.of("Authentication successful",token));
     }
 
     @GetMapping("/question-templates")
-    public ResponseEntity<?> getAllQuestionTemplates() {
-        List<QuestionTemplateDTO> items = questionTemplateService.getAllQuestionTemplates();
-        return ResponseEntity.ok(items);
+    public ResponseEntity<List<QuestionTemplateDTO>> getAllQuestionTemplates() {
+
+        List<QuestionTemplateDTO> questionTemplateDTOS = questionTemplateService.getAllQuestionTemplates();
+        if (questionTemplateDTOS.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        }
+        return ResponseEntity.ok(questionTemplateDTOS); // 200
     }
 
     @GetMapping("/verify-email")
     public ResponseEntity<?> verifyEmail(@RequestParam("token") String token) {
         boolean success = vibeAccountService.verifyEmail(token);
+
         if (success) {
-            return ResponseEntity.status(HttpStatus.FOUND) // 302
-                    .header("Location", frontendBaseUrl + "/email-verified")
+            return ResponseEntity.status(302)
+                    .header("Location", "http://localhost:5173/email-verified")
                     .build();
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Invalid or expired token."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
         }
     }
+
+
 }
