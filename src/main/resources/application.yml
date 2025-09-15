@@ -45,6 +45,8 @@ server:
 
 amplitude:
   api-key: ${AMPLITUDE_API_KEY:}
+  secret-key: ${AMPLITUDE_SECRET_KEY:}
+  exportUrl: https://amplitude.com/api/2/export
 
 vibe:
   upload:
