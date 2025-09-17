@@ -34,31 +34,31 @@ public class SecurityConfig {
     private String jwkSetUri;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain security(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v3/catalog", "/api/v3/catalog/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v3/reviews/**").permitAll()
-                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico",
-                                "/view/**", "/clearviewblue.png").permitAll()
-                        .requestMatchers("/.well-known/jwks.json",
-                                "/api/v3/auth/start",
-                                "/api/v3/auth/check",
-                                "/api/v3/auth/signup",
-                                "/api/v3/auth/question-templates",
-                                "/api/v3/auth/verify-email").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v3/catalog", "/api/v3/catalog/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v3/vibes/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v3/offers/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)));
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/index.html", "/static/**", "/assets/**",
+                                 "/favicon.ico", "/view/**", "/clearviewblue.png",
+                                 "/uploads/**").permitAll()
+                .requestMatchers("/actuator/health", "/actuator/health/**",
+                                 "/.well-known/jwks.json").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+    
+                .requestMatchers(HttpMethod.POST, "/v3/auth/**", "/api/v3/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET,  "/v3/auth/**", "/api/v3/auth/**").permitAll()
+    
+                .requestMatchers(HttpMethod.GET,
+                        "/v3/catalog/**", "/api/v3/catalog/**",
+                        "/v3/reviews/**", "/api/v3/reviews/**",
+                        "/v3/vibes/**",   "/api/v3/vibes/**",
+                        "/v3/offers/**",  "/api/v3/offers/**"
+                ).permitAll()
+    
+                .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)));
         return http.build();
     }
 
