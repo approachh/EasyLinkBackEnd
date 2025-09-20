@@ -40,7 +40,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/index.html", "/static/**", "/assets/**",
-                                 "/favicon.ico", "/view/**", "/clearviewblue.png",
+                                 "/favicon.ico", "/email-verified", "/view/**", "/clearviewblue.png",
                                  "/uploads/**").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/health/**",
                                  "/.well-known/jwks.json").permitAll()
