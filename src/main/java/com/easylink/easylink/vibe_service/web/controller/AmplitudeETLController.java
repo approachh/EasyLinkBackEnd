@@ -1,6 +1,6 @@
 package com.easylink.easylink.vibe_service.web.controller;
 
-import com.easylink.easylink.vibe_service.application.service.AmplitudeETLService;
+import com.easylink.easylink.etl.application.service.AmplitudeETLService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;

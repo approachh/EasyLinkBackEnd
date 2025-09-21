@@ -20,7 +20,7 @@ public class ReviewService {
 
     public ReviewDTO addReview(ReviewDTO reviewDTO){
 
-        System.out.println("⚠️ ДОБАВЛЕНИЕ ОТЗЫВА: " + reviewDTO);
+        System.out.println("⚠️ Add a review: " + reviewDTO);
 
         Review review = reviewRepository.save(modelMapper.map(reviewDTO,Review.class));
         if(review!=null){
