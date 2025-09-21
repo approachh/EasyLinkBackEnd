@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,29 +24,32 @@ public class EmailVerificationService {
     private final JavaMailSender mailSender;
 
     @Value("${app.verification.base-url}")
-    private String baseUrl;
+    private String baseUrl; // for example: https://api.youmeknow.com
 
-//    public EmailVerificationService(VibeAccountRepository vibeAccountRepository,
-//                                    JavaMailSender mailSender) {
-//        this.vibeAccountRepository = vibeAccountRepository;
-//        this.mailSender = mailSender;
-//    }
+    @Value("${app.mail.from:${SPRING_MAIL_USERNAME:}}")
+    private String fromAddress; // by default = SMTP username
+
+    @Value("${app.verification.ttl-hours:24}")
+    private long ttlHours;
 
     public boolean verifyToken(String token) {
         Optional<VibeAccount> optionalAccount = vibeAccountRepository.findByEmailVerificationToken(token);
-
         if (optionalAccount.isEmpty()) return false;
 
         VibeAccount account = optionalAccount.get();
 
-        if (account.getTokenExpiry() == null || account.getTokenExpiry().isBefore(LocalDateTime.now())) {
+        if (Boolean.TRUE.equals(account.getIsEmailVerified())) {
+            return true;
+        }
+
+        LocalDateTime nowUtc = LocalDateTime.now(ZoneOffset.UTC);
+        if (account.getTokenExpiry() == null || account.getTokenExpiry().isBefore(nowUtc)) {
             return false;
         }
 
         account.setIsEmailVerified(true);
         account.setEmailVerificationToken(null);
         account.setTokenExpiry(null);
-
         vibeAccountRepository.save(account);
 
         return true;
@@ -52,11 +57,18 @@ public class EmailVerificationService {
 
     public void sendVerificationEmail(VibeAccount account) {
         String token = UUID.randomUUID().toString();
+
+        LocalDateTime nowUtc = LocalDateTime.now(ZoneOffset.UTC);
         account.setEmailVerificationToken(token);
-        account.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        account.setTokenExpiry(nowUtc.plusHours(ttlHours));
         vibeAccountRepository.save(account);
 
-        String link = baseUrl + "/api/v3/auth/verify-email?token=" + token;
+        String link = UriComponentsBuilder
+                .fromHttpUrl(baseUrl)
+                .path("/api/v3/auth/verify-email")
+                .queryParam("token", token)
+                .build()
+                .toUriString();
 
         String html = "<!DOCTYPE html>" +
                 "<html><head><meta charset=\"UTF-8\"></head><body>" +
@@ -75,13 +87,15 @@ public class EmailVerificationService {
                 "</td></tr></table>" +
                 "</body></html>";
 
-
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            if (fromAddress != null && !fromAddress.isBlank()) {
+                helper.setFrom(fromAddress);
+            }
             helper.setTo(account.getEmail());
             helper.setSubject("Verify your email");
-            helper.setText(html, true); // true = is HTML
+            helper.setText(html, true); // HTML
 
             mailSender.send(message);
         } catch (MessagingException e) {

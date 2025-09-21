@@ -56,10 +56,22 @@ logging:
   level:
     org.springframework.web.servlet.resource: ${LOGGING_LEVEL_RESOURCE:INFO}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true   # /actuator/health/liveness|readiness
+      show-details: never
+
 app:
   frontend:
     base-url: ${FRONTEND_BASE_URL:https://youmeknow.com}
   verification:
     base-url: ${APP_VERIFICATION_BASE_URL:http://localhost:8080}
+    
 jwt:
   private: ${JWT_PRIVATE:}
