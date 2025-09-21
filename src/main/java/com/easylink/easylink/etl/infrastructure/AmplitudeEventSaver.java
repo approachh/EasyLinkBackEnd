@@ -3,9 +3,9 @@ package com.easylink.easylink.etl.infrastructure;
 import com.easylink.easylink.etl.application.ports.out.AmplitudeEventRepositoryPort;
 import com.easylink.easylink.etl.domain.AmplitudeRawEvent;
 import com.easylink.easylink.vibe_service.domain.model.AmplitudeEvent;
-import com.easylink.easylink.vibe_service.infrastructure.repository.SpringAmplitudeEventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import com.easylink.easylink.etl.infrastructure.SpringAmplitudeEventRepository;
 
 import java.time.Instant;
 import java.util.List;

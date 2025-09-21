@@ -26,13 +26,4 @@ public class FileController {
             return ResponseEntity.internalServerError().body("Upload failed.");
         }
     }
-
-//    @GetMapping("/{imageUrl}")
-//    public ResponseEntity<MultipartFile> getFile(@PathVariable String imageUrl){
-//
-//        fileStorageService.get
-//
-//        return ResponseEntity;
-//    }
-
 }

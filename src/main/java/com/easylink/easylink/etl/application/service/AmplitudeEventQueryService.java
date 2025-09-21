@@ -1,0 +1,34 @@
+package com.easylink.easylink.etl.application.service;
+
+import com.easylink.easylink.etl.infrastructure.SpringAmplitudeEventRepository;
+import com.easylink.easylink.etl.web.dto.AmplitudeEventResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AmplitudeEventQueryService {
+
+    private final SpringAmplitudeEventRepository repository;
+
+    public List<AmplitudeEventResponse> getEventsByUser(String userId, Instant start, Instant end) {
+        return repository.findByUserIdAndServerUploadTimeBetween(userId, start, end).stream()
+                .map(AmplitudeEventResponse::from)
+                .toList();
+    }
+
+    public List<AmplitudeEventResponse> getEventsByOffer(String offerId, Instant start, Instant end) {
+        return repository.findByOfferIdAndServerUploadTimeBetween(offerId, start, end).stream()
+                .map(AmplitudeEventResponse::from)
+                .toList();
+    }
+
+//    public List<AmplitudeEventResponse> getEventsByCatalog(String catalogId, Instant start, Instant end) {
+//        return repository.findByCatalogIdAndServerUploadTimeBetween(catalogId, start, end).stream()
+//                .map(AmplitudeEventResponse::from)
+//                .toList();
+//    }
+}

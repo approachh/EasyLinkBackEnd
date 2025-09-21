@@ -26,6 +26,7 @@ public class AmplitudeEvent {
     private Instant eventTime;
     private String insertId;
     private Instant serverUploadTime;
+    private String offerId;
     @Lob
     private String eventProperties;
 
