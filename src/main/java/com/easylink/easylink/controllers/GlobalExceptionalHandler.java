@@ -1,9 +1,6 @@
 package com.easylink.easylink.controllers;
 
-import com.easylink.easylink.exceptions.DuplicateAccountException;
-import com.easylink.easylink.exceptions.IncorrectAnswerException;
-import com.easylink.easylink.exceptions.RateLimitExceededException;
-import com.easylink.easylink.exceptions.UserLockedException;
+import com.easylink.easylink.exceptions.*;
 import com.easylink.easylink.vibe_service.infrastructure.exception.OfferUpdateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,4 +76,13 @@ public class GlobalExceptionalHandler {
         return ResponseEntity.status(429).body(ex.getMessage());
     }
 
+    @ExceptionHandler(OfferLimitExceededException.class)
+    public ResponseEntity<String> handleOfferLimit(OfferLimitExceededException ex){
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(VibeLimitExceededException.class)
+    public ResponseEntity<String> handleVibeLimit(VibeLimitExceededException ex){
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
+    }
 }

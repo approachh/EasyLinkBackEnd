@@ -1,8 +1,10 @@
 package com.easylink.easylink.vibe_service.application.service;
 
+import com.easylink.easylink.exceptions.OfferLimitExceededException;
 import com.easylink.easylink.vibe_service.application.dto.CreateOfferCommand;
 import com.easylink.easylink.vibe_service.application.dto.OfferDto;
 import com.easylink.easylink.vibe_service.application.port.in.offer.CreateOfferUseCase;
+import com.easylink.easylink.vibe_service.application.port.in.offer.OfferRateLimitPort;
 import com.easylink.easylink.vibe_service.application.port.out.VibeRepositoryPort;
 import com.easylink.easylink.vibe_service.domain.interaction.offer.DiscountType;
 import com.easylink.easylink.vibe_service.domain.interaction.offer.Offer;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,6 +29,7 @@ public class OfferServiceImpl implements CreateOfferUseCase {
     private final VibeRepositoryPort vibeRepositoryPort;
     private final JpaOfferRepositoryAdapter jpaOfferRepositoryAdapter;
     private final AmplitudeService amplitudeService;
+    private final OfferRateLimitPort rateLimitPort;
 
     @Override
     public OfferDto create(CreateOfferCommand createOfferCommand) {
@@ -41,11 +43,15 @@ public class OfferServiceImpl implements CreateOfferUseCase {
             throw new IllegalArgumentException("Offer creation is allowed only for BUSINESS vibes");
         }
 
+        if(!rateLimitPort.canCreateOffer(vibe.getName().toString())){
+            throw new OfferLimitExceededException("Offer limit exceeded for user: "+vibe.getName());
+        }
+
         Offer offer = modelMapper.map(createOfferCommand, Offer.class);
         offer.setVibe(vibe);
         offer.setActive(true);
         offer.setStartTime(LocalDateTime.now());
-        offer.setStartTime(createOfferCommand.getEndTime());
+        offer.setEndTime(createOfferCommand.getEndTime());
 
         Offer offerSaved = jpaOfferRepositoryAdapter.save(offer);
 
@@ -166,5 +172,18 @@ public class OfferServiceImpl implements CreateOfferUseCase {
             throw new OfferUpdateException("Error in updating offer",e);
         }
     }
+
+    public void deleteOffer(UUID offerId, UUID vibeId) {
+        Vibe vibe = vibeRepositoryPort.findById(vibeId)
+                .orElseThrow(() -> new IllegalArgumentException("Vibe not found"));
+
+        Offer offer = jpaOfferRepositoryAdapter.findById(offerId)
+                .orElseThrow(() -> new RuntimeException("Offer not found"));
+
+        jpaOfferRepositoryAdapter.delete(offer);
+
+        rateLimitPort.decrementOffer(vibe.getId().toString());
+    }
+
 
 }

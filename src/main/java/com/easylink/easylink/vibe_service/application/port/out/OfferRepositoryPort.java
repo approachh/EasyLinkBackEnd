@@ -11,4 +11,5 @@ public interface OfferRepositoryPort {
     Offer save(Offer offer);
     List<Offer> findAllByVibe(Vibe vibe);
     Optional<Offer> findById(UUID id);
+    void delete(Offer offer);
 }
