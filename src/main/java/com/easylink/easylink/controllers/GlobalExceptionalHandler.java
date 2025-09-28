@@ -2,6 +2,7 @@ package com.easylink.easylink.controllers;
 
 import com.easylink.easylink.exceptions.DuplicateAccountException;
 import com.easylink.easylink.exceptions.IncorrectAnswerException;
+import com.easylink.easylink.exceptions.RateLimitExceededException;
 import com.easylink.easylink.exceptions.UserLockedException;
 import com.easylink.easylink.vibe_service.infrastructure.exception.OfferUpdateException;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,6 @@ public class GlobalExceptionalHandler {
 
     @ExceptionHandler(IncorrectAnswerException.class)
     public ResponseEntity<Map<String, Object>> handleIncorrectAnswer(IncorrectAnswerException ex) {
-        System.out.println("IncorrectAnswerException caught by GlobalExceptionHandler!");
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Incorrect answer(s)", ex.getMessage());
     }
 
@@ -73,4 +73,10 @@ public class GlobalExceptionalHandler {
     private ResponseEntity<String> handleDuplicateAccount(DuplicateAccountException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<String> handleLimit(RuntimeException ex){
+        return ResponseEntity.status(429).body(ex.getMessage());
+    }
+
 }
