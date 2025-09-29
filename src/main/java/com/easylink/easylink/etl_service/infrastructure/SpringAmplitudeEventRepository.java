@@ -9,5 +9,6 @@ import java.util.UUID;
 public  interface SpringAmplitudeEventRepository extends JpaRepository<AmplitudeEvent, UUID> {
     List<AmplitudeEvent> findByUserIdAndServerUploadTimeBetween(String userId, Instant start, Instant end);
     List<AmplitudeEvent> findByOfferIdAndServerUploadTimeBetween(String offerId, Instant start, Instant end);
+    AmplitudeEvent findByOfferId(String offerId);
  //   List<AmplitudeEvent> findByCatalogIdAndServerUploadTimeBetween(String catalogId, Instant start, Instant end);
 }

@@ -37,13 +37,24 @@ public class AmplitudeZipParser implements AmplitudeParserPort {
 
                     String line;
                     while((line = br.readLine())!=null){
+
                         JsonNode node = mapper.readTree(line);
+
+                        String offerId = node.path("event_properties").path("offerId").asText(null);
+//
+//                        System.out.println("offerID "+"  "+node.path("event_type").asText(null)+" "+offerId);
+
+                        System.out.println("RAW EVENT: " + node.toPrettyString());
+
+
                         events.add(new AmplitudeRawEvent(
                                 node.path("user_id").asText(null),
                                 node.path("event_type").asText(null),
                                 node.path("insert_id").asText(null),
                                 node.path("server_upload_time").asLong(0),
-                                node.path("event_properties").toString()
+                                node.path("user_properties").toString(),
+                                node.path("event_properties").toString(),
+                                node.path("event_properties").path("offerId").asText(null)
                         ));
                     }
                 }

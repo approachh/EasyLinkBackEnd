@@ -24,19 +24,4 @@ public class AmplitudeETLController {
         etlService.fetchAndSave(start, end);
         return "ETL started for " + start + " → " + end;
     }
-
-    @GetMapping("/events")
-    public List<AmplitudeEventResponse> getEvents(
-            @RequestParam String type,
-            @RequestParam String id,
-            @RequestParam (required = false)Instant start,
-            @RequestParam (required = false) Instant end){
-
-        return switch(type.toLowerCase()){
-            case "user" ->amplitudeEventQueryService.getEventsByUser(id,start,end);
-            case "offer" ->amplitudeEventQueryService.getEventsByOffer(id,start,end);
-            //  case "catalog" ->amplitudeEventQueryService.getEventsByCatalog(id,start,end);
-            default -> throw new IllegalArgumentException("Unsupported type "+type);
-        };
-    }
 }

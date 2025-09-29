@@ -4,5 +4,7 @@ public record AmplitudeRawEvent (String userId,
                                  String eventType,
                                  String insertId,
                                  long serverUploadTime,
-                                 String userProperties
+                                 String userProperties,
+                                 String eventProperties,
+                                 String offerId
                                  ){}

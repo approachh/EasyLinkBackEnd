@@ -21,6 +21,9 @@ public class AmplitudeEventQueryService {
     }
 
     public List<AmplitudeEventResponse> getEventsByOffer(String offerId, Instant start, Instant end) {
+
+      //  var events = repository.findByOfferId(offerId);
+
         return repository.findByOfferIdAndServerUploadTimeBetween(offerId, start, end).stream()
                 .map(AmplitudeEventResponse::from)
                 .toList();
