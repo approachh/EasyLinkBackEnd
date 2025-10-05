@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +26,32 @@ import java.util.zip.ZipFile;
 public class AmplitudeZipParser implements AmplitudeParserPort {
 
     private final ObjectMapper mapper = new ObjectMapper();
+
+    private static Instant parseFlexibleInstant(JsonNode node, String fieldName) {
+        JsonNode field = node.path(fieldName);
+        if (field.isMissingNode() || field.isNull()) return null;
+
+        String text = field.asText().trim();
+        if (text.isEmpty()) return null;
+
+        try {
+            if (text.matches("\\d+")) {
+                return Instant.ofEpochMilli(Long.parseLong(text));
+            }
+
+            if (text.contains("T")) {
+                return Instant.parse(text);
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+            LocalDateTime ldt = LocalDateTime.parse(text, formatter);
+            return ldt.atZone(ZoneOffset.UTC).toInstant();
+
+        } catch (Exception e) {
+            System.out.println("Couldn't parse it " + fieldName + ": " + text);
+            return null;
+        }
+    }
 
     @Override
     public List<AmplitudeRawEvent> parse(File zipFile) {
@@ -41,17 +71,16 @@ public class AmplitudeZipParser implements AmplitudeParserPort {
                         JsonNode node = mapper.readTree(line);
 
                         String offerId = node.path("event_properties").path("offerId").asText(null);
-//
-//                        System.out.println("offerID "+"  "+node.path("event_type").asText(null)+" "+offerId);
 
-                        System.out.println("RAW EVENT: " + node.toPrettyString());
-
+                        Instant eventTime = parseFlexibleInstant(node,"event_time");
+                        Instant serverUploadTime = parseFlexibleInstant(node, "server_upload_time");
 
                         AmplitudeRawEvent are = new AmplitudeRawEvent(
                                 node.path("user_id").asText(null),
                                 node.path("event_type").asText(null),
                                 node.path("insert_id").asText(null),
-                                node.path("server_upload_time").asLong(0),
+                                eventTime,
+                                serverUploadTime,
                                 node.path("user_properties").toString(),
                                 node.path("event_properties").toString(),
                                 offerId
