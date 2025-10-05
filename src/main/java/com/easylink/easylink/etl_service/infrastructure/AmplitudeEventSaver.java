@@ -16,16 +16,7 @@ public class AmplitudeEventSaver implements AmplitudeEventRepositoryPort {
     private final SpringAmplitudeEventRepository repository;
 
     @Override
-    public void saveAll(List<AmplitudeRawEvent> events) {
-        for(AmplitudeRawEvent raw:events.toArray(new AmplitudeRawEvent[0])){
-            AmplitudeEvent event = AmplitudeEvent.builder()
-                    .userId(raw.userId())
-                    .eventType(raw.eventType())
-                    .insertId(raw.insertId())
-                    .serverUploadTime(Instant.ofEpochMilli(raw.serverUploadTime()))
-                    .userProperties(raw.userProperties())
-                    .build();
-            repository.save(event);
-        }
+    public void saveAll(List<AmplitudeEvent> events) {
+        repository.saveAll(events);
     }
 }

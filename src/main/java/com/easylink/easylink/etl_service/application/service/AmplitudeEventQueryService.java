@@ -2,6 +2,7 @@ package com.easylink.easylink.etl_service.application.service;
 
 import com.easylink.easylink.etl_service.infrastructure.SpringAmplitudeEventRepository;
 import com.easylink.easylink.etl_service.web.dto.AmplitudeEventResponse;
+import com.easylink.easylink.vibe_service.domain.model.AmplitudeEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +25,11 @@ public class AmplitudeEventQueryService {
 
       //  var events = repository.findByOfferId(offerId);
 
-        return repository.findByOfferIdAndServerUploadTimeBetween(offerId, start, end).stream()
+        List<AmplitudeEventResponse> ae =repository.findByOfferIdAndServerUploadTimeBetween(offerId, start, end).stream()
                 .map(AmplitudeEventResponse::from)
                 .toList();
+
+        return ae;
     }
 
 //    public List<AmplitudeEventResponse> getEventsByCatalog(String catalogId, Instant start, Instant end) {

@@ -47,15 +47,17 @@ public class AmplitudeZipParser implements AmplitudeParserPort {
                         System.out.println("RAW EVENT: " + node.toPrettyString());
 
 
-                        events.add(new AmplitudeRawEvent(
+                        AmplitudeRawEvent are = new AmplitudeRawEvent(
                                 node.path("user_id").asText(null),
                                 node.path("event_type").asText(null),
                                 node.path("insert_id").asText(null),
                                 node.path("server_upload_time").asLong(0),
                                 node.path("user_properties").toString(),
                                 node.path("event_properties").toString(),
-                                node.path("event_properties").path("offerId").asText(null)
-                        ));
+                                offerId
+                        );
+
+                        events.add(are);
                     }
                 }
             }
