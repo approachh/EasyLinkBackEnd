@@ -32,4 +32,9 @@ public class JpaOfferRepositoryAdapter implements OfferRepositoryPort {
     public Optional<Offer> findById(UUID id) {
         return springDataOffer.findById(id);
     }
+
+    @Override
+    public void delete(Offer offer) {
+        springDataOffer.delete(offer);
+    }
 }

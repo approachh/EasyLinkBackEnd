@@ -59,4 +59,11 @@ public class OfferController {
 
        return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{offerId}")
+    public ResponseEntity<Void> deleteOffer(@PathVariable UUID offerId,
+                                            @RequestParam UUID vibeId) {
+        offerService.deleteOffer(offerId, vibeId);
+        return ResponseEntity.noContent().build();
+    }
 }

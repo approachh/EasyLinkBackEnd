@@ -1,5 +1,6 @@
 package com.easylink.easylink.vibe_service.application.service;
 
+import com.easylink.easylink.exceptions.VibeLimitExceededException;
 import com.easylink.easylink.vibe_service.application.dto.CreateVibeCommand;
 import com.easylink.easylink.vibe_service.application.dto.UpdateVibeCommand;
 import com.easylink.easylink.vibe_service.application.dto.VibeDto;
@@ -23,9 +24,14 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
     private final VibeRepositoryPort vibeRepositoryPort;
     private final VibeFieldRepositoryPort vibeFieldRepositoryPort;
+    private final VibeRateLimitPort rateLimitPort;
 
     @Override
     public VibeDto create(CreateVibeCommand command, String vibeAccountId) {
+
+        if(!rateLimitPort.canCreateVibe(vibeAccountId)){
+            throw new VibeLimitExceededException("Vibe limit exceeded for account: "+vibeAccountId);
+        }
 
         List<UUID> ids = command.getVibeFieldsDTO().stream().map(VibeFieldDTO::getId).collect(Collectors.toList());
 
@@ -146,6 +152,8 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
         }
 
         vibeRepositoryPort.delete(vibe);
+
+        rateLimitPort.decrementVibe(accountId.toString());
     }
 
     @Override
