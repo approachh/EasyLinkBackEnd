@@ -28,9 +28,9 @@ public class AmplitudeEvent {
     private Instant serverUploadTime;
     @Column(name = "offer_id")
     private String offerId;
-    @Lob
-    @Column(name = "event_properties")
+    @Column(name = "event_properties", columnDefinition = "TEXT")
     private String eventProperties;
+
 
     @Column(columnDefinition = "TEXT")
     private  String userProperties;
