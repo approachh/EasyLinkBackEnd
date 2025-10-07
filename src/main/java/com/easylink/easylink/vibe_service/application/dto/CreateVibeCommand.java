@@ -17,5 +17,6 @@ public class CreateVibeCommand {
     private String name;
     private String description;
     private VibeType type;
+    private String photo;
     private List<VibeFieldDTO> vibeFieldsDTO;
 }

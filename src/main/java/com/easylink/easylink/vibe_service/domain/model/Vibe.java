@@ -30,6 +30,9 @@ public class Vibe {
     @Enumerated(EnumType.STRING)
     private VibeType type;
 
+    @Column(name = "photo")
+    private String photo;
+
     @Column(nullable = true)
     private Boolean visible;
 

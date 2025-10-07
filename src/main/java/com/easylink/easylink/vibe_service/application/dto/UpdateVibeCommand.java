@@ -14,5 +14,6 @@ public class UpdateVibeCommand {
     private String name;
     private UUID accountId;
     private String description;
+    private String photo;
     private List<VibeFieldDTO> fieldsDTO; // тут то же самое, список DTO
 }
