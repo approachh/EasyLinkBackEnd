@@ -16,5 +16,6 @@ public class VibeResponse {
     private String name;
     private Boolean visible;
     private String publicCode;
+    private String photo;
     private List<VibeFieldDTO> fieldsDTO;
 }

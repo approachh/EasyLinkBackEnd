@@ -12,5 +12,6 @@ public class UpdateVibeRequest {
     private String name;
     private String description;
     private List<UUID> fieldIds;
+    private String photo;
     private List<VibeFieldDTO> fieldsDTO; // вот тут массив объектов, а не id!
 }

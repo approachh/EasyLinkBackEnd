@@ -18,6 +18,7 @@ public class VibeDtoMapper {
         vibeDto.setName(vibe.getName());
         vibeDto.setPublicCode(vibe.getPublicCode());
         vibeDto.setVisible(vibe.getVisible());
+        vibeDto.setPhoto(vibe.getPhoto());
 
         List<VibeFieldDTO> vibeFieldDTOS = vibe.getFields().stream().map(val ->
                 new VibeFieldDTO(

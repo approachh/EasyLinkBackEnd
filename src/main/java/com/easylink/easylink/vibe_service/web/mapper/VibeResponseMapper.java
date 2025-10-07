@@ -13,6 +13,7 @@ public class VibeResponseMapper {
         response.setPublicCode(vibeDto.getPublicCode());
         response.setType(vibeDto.getType());
         response.setFieldsDTO(vibeDto.getFieldsDTO());
+        response.setPhoto(vibeDto.getPhoto());
         return response;
     }
 }

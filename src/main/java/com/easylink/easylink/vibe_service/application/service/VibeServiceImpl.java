@@ -67,6 +67,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
         vibe.setVibeAccountId(UUID.fromString(vibeAccountId));
         vibe.setDescription(command.getDescription());
         vibe.setType(command.getType());
+        vibe.setPhoto(command.getPhoto());
 
         vibe.setFields(vibeFieldList);
 
@@ -98,6 +99,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
         vibe.setName(updateVibeCommand.getName());
         vibe.setDescription(updateVibeCommand.getDescription());
+        vibe.setPhoto(request.getPhoto());
 
         List<VibeFieldDTO> fields = updateVibeCommand.getFieldsDTO();
         if (fields == null) fields = List.of();
