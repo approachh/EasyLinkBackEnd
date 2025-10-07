@@ -39,16 +39,19 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/index.html", "/static/**", "/assets/**",
                                 "/favicon.ico", "/email-verified",
+                                "/*.png", "/**/*.png", "/*.svg", "/**/*.svg",
+                                "/*.jpg", "/**/*.jpg", "/*.jpeg", "/**/*.jpeg",
+                                "/*.css", "/**/*.css", "/*.js", "/**/*.js",
                                 "/view/**", "view/**",
                                 "/view-offer-form/**", "view-offer-form/**",
                                 "/vibes/**", "vibes/**",
                                 "/profile/**", "profile/**",
                                 "/signup", "/login", "/register",
                                 "/clearviewblue.png", "/uploads/**",
-                                "/**/{path:[^\\.]*}" // forward для FrontendController
+                                "/**/{path:[^\\.]*}" // forward for FrontendController
                         ).permitAll()
 
-                        // ======= 🔓 Public API endpoints =======
+                        // ======= Public API endpoints =======
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v3/catalog/**",
                                 "/api/v3/reviews/**",
@@ -62,12 +65,12 @@ public class SecurityConfig {
                                 "/api/v3/auth/**"
                         ).permitAll()
 
-                        // ======= ⚙️ Service / health checks =======
+                        // ======= Service / health checks =======
                         .requestMatchers("/actuator/health", "/actuator/health/**",
                                 "/.well-known/jwks.json").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // ======= 🔒 All other endpoints require JWT =======
+                        // ======= All other endpoints require JWT =======
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)));
