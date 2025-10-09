@@ -156,7 +156,7 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
         vibeRepositoryPort.delete(vibe);
 
-        rateLimitPort.decrementVibe(accountId.toString());
+        vibeRateLimitPort.decrementVibe(accountId.toString());
     }
 
     @Override
