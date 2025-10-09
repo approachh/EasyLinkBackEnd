@@ -24,12 +24,13 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
     private final VibeRepositoryPort vibeRepositoryPort;
     private final VibeFieldRepositoryPort vibeFieldRepositoryPort;
-    private final VibeRateLimitPort rateLimitPort;
+    //private final VibeRateLimitPort rateLimitPort;
+    private final VibeRateLimitPort vibeRateLimitPort;
 
     @Override
     public VibeDto create(CreateVibeCommand command, String vibeAccountId) {
 
-        if(!rateLimitPort.canCreateVibe(vibeAccountId)){
+        if(!vibeRateLimitPort.canCreateVibe(vibeAccountId)){
             throw new VibeLimitExceededException("Vibe limit exceeded for account: "+vibeAccountId);
         }
 
