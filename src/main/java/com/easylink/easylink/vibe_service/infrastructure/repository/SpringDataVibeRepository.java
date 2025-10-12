@@ -14,4 +14,5 @@ public interface SpringDataVibeRepository extends JpaRepository<Vibe, UUID> {
     List<Vibe> findAllById(UUID id);
     Optional<Vibe> findById(UUID id);
     Optional<Vibe> findByPublicCodeAndVisibleTrue(String publicCode);
+    long countByVibeAccountId(UUID id);
 }

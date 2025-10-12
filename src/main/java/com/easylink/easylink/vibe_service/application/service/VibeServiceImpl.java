@@ -1,6 +1,8 @@
 package com.easylink.easylink.vibe_service.application.service;
 
+import com.easylink.easylink.entities.VibeAccount;
 import com.easylink.easylink.exceptions.VibeLimitExceededException;
+import com.easylink.easylink.repositories.VibeAccountRepository;
 import com.easylink.easylink.vibe_service.application.dto.CreateVibeCommand;
 import com.easylink.easylink.vibe_service.application.dto.UpdateVibeCommand;
 import com.easylink.easylink.vibe_service.application.dto.VibeDto;
@@ -11,10 +13,12 @@ import com.easylink.easylink.vibe_service.application.port.out.VibeRepositoryPor
 import com.easylink.easylink.vibe_service.domain.model.*;
 import com.easylink.easylink.vibe_service.web.dto.UpdateVibeRequest;
 import com.easylink.easylink.vibe_service.web.dto.VibeFieldDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,14 +28,20 @@ public class VibeServiceImpl implements CreateVibeUseCase, UpdateVibeUseCase, De
 
     private final VibeRepositoryPort vibeRepositoryPort;
     private final VibeFieldRepositoryPort vibeFieldRepositoryPort;
-    //private final VibeRateLimitPort rateLimitPort;
+    private final VibeAccountRepository vibeAccountRepository;
     private final VibeRateLimitPort vibeRateLimitPort;
 
     @Override
     public VibeDto create(CreateVibeCommand command, String vibeAccountId) {
 
-        if(!vibeRateLimitPort.canCreateVibe(vibeAccountId)){
-            throw new VibeLimitExceededException("Vibe limit exceeded for account: "+vibeAccountId);
+        Optional<VibeAccount> existingAccount = vibeAccountRepository.findById(UUID.fromString(vibeAccountId));
+        if (existingAccount.isEmpty()) {
+            throw new EntityNotFoundException("Vibe account not found: " + vibeAccountId);
+        }
+
+        long existingVibeCount = vibeRepositoryPort.countByVibeAccountId(UUID.fromString(vibeAccountId));
+        if(!vibeRateLimitPort.canCreateVibe(vibeAccountId, existingVibeCount)){
+            throw new VibeLimitExceededException("Vibe limit exceeded for account: "+existingAccount.get().getEmail());
         }
 
         List<UUID> ids = command.getVibeFieldsDTO().stream().map(VibeFieldDTO::getId).collect(Collectors.toList());

@@ -50,4 +50,9 @@ public class JpaVibeRepositoryAdapter  implements VibeRepositoryPort {
     public Optional<Vibe> findByPublicCodeAndVisibleTrue(String publicCode) {
         return delegate.findByPublicCodeAndVisibleTrue(publicCode);
     }
+
+    @Override
+    public long countByVibeAccountId(UUID userId) {
+        return delegate.countByVibeAccountId(userId);
+    }
 }
